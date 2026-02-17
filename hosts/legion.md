@@ -32,6 +32,13 @@
 - **Gemini CLI**: インストール・認証済み
 - **Claude Code (CLI)**: `@anthropic-ai/claude-code` インストール済み
     - エディタ連携: `vim` 設定済み
+- **Playwright**: `@playwright/cli` インストール済み
+
+## 5. 開発者ツール & ブラウザ
+- **ブラウザ**: Brave Browser (インストール済み)
+- **Rust / Leptos**: 
+    - `rustup`, `cargo-leptos`, `wasm32-unknown-unknown` 導入済み
+    - 高速化ツール: `mold` (リンカ), `sccache` (コンパイルキャッシュ) 導入済み
 
 ## 5. 特記事項
 - 特定のクレデンシャルやライブラリ依存（OpenSSL等）については、必要に応じて各CLIへのプロンプトで個別指示を行う。
@@ -105,10 +112,12 @@
    ```
 2. **インストール & 権限設定**:
    ```bash
-   sudo apt update
-   sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-   sudo usermod -aG docker $USER
-   ```
+    sudo apt update
+    sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    sudo usermod -aG docker $USER
+    # 権限エラーが出る場合は以下を実行
+    sudo chmod 666 /var/run/docker.sock
+    ```
 
 ### Step 5: AI 開発環境 (Antigravity含む)
 1. **Node.js/npm**: `sudo apt install npm`
@@ -122,5 +131,28 @@
    ```bash
    curl -fsSL https://us-central1-apt.pkg.dev/doc/repo-signing-key.gpg | sudo gpg --dearmor --yes -o /etc/apt/keyrings/antigravity-repo-key.gpg
    echo "deb [signed-by=/etc/apt/keyrings/antigravity-repo-key.gpg] https://us-central1-apt.pkg.dev/projects/antigravity-auto-updater-dev/ antigravity-debian main" | sudo tee /etc/apt/sources.list.d/antigravity.list > /dev/null
-   sudo apt update && sudo apt install antigravity
+    sudo apt update && sudo apt install antigravity
+    ```
+
+### Step 6: その他ツール & Rust 開発環境
+1. **Brave Browser**:
+   `curl -fsS https://dl.brave.com/install.sh | sh`
+2. **Playwright**:
+   `sudo npm install -g @playwright/cli`
+3. **Rust & Leptos インストール**:
+   ```bash
+   # Rust
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+   source $HOME/.cargo/env
+   rustup target add wasm32-unknown-unknown
+   
+   # Leptos & Cross
+   cargo install cargo-leptos
+   cargo install cross --git https://github.com/cross-rs/cross
+   
+   # 高速化ツール (mold, sccache)
+   sudo apt install -y mold sccache
+   # ~/.bashrc に以下を追加
+   # export RUSTC_WRAPPER=sccache
+   # export RUSTFLAGS="-C link-arg=-fuse-ld=mold"
    ```

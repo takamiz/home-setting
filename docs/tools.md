@@ -14,6 +14,10 @@
     - `@anthropic-ai/claude-code`
     - エディタ連携: `vim`
 
-## 3. ターミナル
-- **Ghostty**
-    - モダンなターミナルエミュレータ
+## 3. ターミナル & ブラウザ
+- **Ghostty**: モダンなターミナルエミュレータ
+- **Brave Browser**: メインブラウザ
+
+## 4. その他開発ツール
+- **Playwright**: UIテスト
+- **cargo-leptos**: Rust Leptos 開発ツール

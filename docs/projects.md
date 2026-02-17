@@ -8,7 +8,7 @@
 
 ### Project Lorenzo (Enzo)
 - **概要**: J-Quants APIを利用した株価スクリーニングアプリ
-- **技術**: Python (想定) / API連携
+- **技術**: Rust / Leptos / API連携
 
 ### Family Asset Dashboard
 - **概要**: 家庭内資産管理ダッシュボード
