@@ -41,38 +41,86 @@
 ## 再セットアップ手順 (Setup / Re-setup)
 
 ### Step 1: OS 基本設定
-1. **リポジトリミラーの変更**:
-   `/etc/apt/sources.list.d/ubuntu.sources` を編集し、理研ミラー (`http://ftp.riken.jp/Linux/ubuntu/`) に設定。
+1. **ホスト名の設定**:
+   ```bash
+   sudo hostnamectl set-hostname legion
+   sudo vim /etc/hosts # 'legion' に修正
+   ```
 2. **標準ディレクトリの英語化**:
    `LANG=C xdg-user-dirs-update --force` を実行。
+3. **リポジトリミラーの変更 (DEB822形式)**:
+   `/etc/apt/sources.list.d/ubuntu.sources` を編集し、理研ミラー (`http://ftp.riken.jp/Linux/ubuntu/`) に設定。
+   ```bash
+   sudo sed -i 's|http://jp.archive.ubuntu.com/ubuntu/|http://ftp.riken.jp/Linux/ubuntu/|g' /etc/apt/sources.list.d/ubuntu.sources
+   ```
+4. **APT Modernization**:
+   `sudo apt modernize-sources` を実行して最新形式に移行。
+5. **Sudoers 設定**:
+   `sudo visudo` で `NOPASSWD` 等を設定（必要に応じて）。
 
-### Step 2: 開発ツール & シェル
-1. **Vim のインストールとデフォルト化**:
-   `sudo apt install vim`
+### Step 2: 必須パッケージ & シェル
+1. **基本ツールのインストール**:
+   `sudo apt update && sudo apt install -y vim curl ca-certificates`
+2. **Vim をデフォルトにする**:
    `sudo update-alternatives --config editor` で Vim を選択。
-2. **Bash Vim モード設定**:
-   `~/.bashrc` に `set -o vi` を追加。
-3. **Starship インストール**:
-   公式のインストールスクリプトを実行し、`~/.bashrc` に `eval "$(starship init bash)"` を追加。
-4. **Ghostty インストール**:
+3. **Bash Vim モード設定**:
+   `~/.bashrc` に `set -o vi` を追加し `source ~/.bashrc`。
+4. **Starship インストール**:
+   ```bash
+   curl -sS https://starship.rs/install.sh | sudo sh
+   # ~/.bashrc に eval "$(starship init bash)" を追加
+   ```
+5. **Ghostty インストール**:
    公式サイトより DEB パッケージ等をダウンロードしてインストール。
 
 ### Step 3: Git & SSH
-1. **Git 設定**:
+1. **Git & GitHub CLI 設定**:
    ```bash
+   sudo apt install -y git gh
    git config --global user.name "takamiz"
    git config --global user.email "takamiz@gmail.com"
    git config --global core.editor "vim"
+   gh auth login
    ```
-2. **SSH 鍵作成**:
-   `ssh-keygen -t ed25519 -C "takamiz@gmail.com"`
+2. **SSH 鍵作成 & サーバー登録**:
+   ```bash
+   ssh-keygen -t ed25519 -C "takamiz@gmail.com"
+   ssh-copy-id rasp # (rasp は ~/.ssh/config で 192.168.0.200 に設定)
+   ```
 
-### Step 4: AI 開発環境
-1. **Gemini CLI**: `gemini login` で認証。
+### Step 4: Docker CE インストール
+1. **キーリングとリポジトリ設定**:
+   ```bash
+   sudo install -m 0755 -d /etc/apt/keyrings
+   sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+   sudo chmod a+r /etc/apt/keyrings/docker.asc
+   
+   sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+   Types: deb
+   URIs: https://download.docker.com/linux/ubuntu
+   Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+   Components: stable
+   Signed-By: /etc/apt/keyrings/docker.asc
+   EOF
+   ```
+2. **インストール & 権限設定**:
+   ```bash
+   sudo apt update
+   sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+   sudo usermod -aG docker $USER
+   ```
+
+### Step 5: AI 開発環境 (Antigravity含む)
+1. **Node.js/npm**: `sudo apt install npm`
 2. **Claude Code**:
-   `npm install -g @anthropic-ai/claude-code`
+   `sudo npm install -g @anthropic-ai/claude-code`
    `claude config set editor vim`
-
-### Step 5: ネットワーク & サーバー接続
-1. `~/.ssh/config` に `rasp` の設定を追加 (IP: 192.168.0.200)。
-2. `ssh-copy-id rasp` で公開鍵を転送。
+3. **Gemini CLI**:
+   `sudo npm install -g @google/gemini-cli`
+   `gemini login`
+4. **Antigravity**:
+   ```bash
+   curl -fsSL https://us-central1-apt.pkg.dev/doc/repo-signing-key.gpg | sudo gpg --dearmor --yes -o /etc/apt/keyrings/antigravity-repo-key.gpg
+   echo "deb [signed-by=/etc/apt/keyrings/antigravity-repo-key.gpg] https://us-central1-apt.pkg.dev/projects/antigravity-auto-updater-dev/ antigravity-debian main" | sudo tee /etc/apt/sources.list.d/antigravity.list > /dev/null
+   sudo apt update && sudo apt install antigravity
+   ```
