@@ -12,6 +12,7 @@
 - [エディタ・ツール設定 (Vim/AI)](docs/tools.md)
 - [進行中プロジェクト一覧](docs/projects.md)
 - [PC個別設定: legion](hosts/legion.md)
+- [PC個別設定: thales](hosts/thales.md)
 
 ---
 

@@ -22,7 +22,10 @@
 
 ## 3. SSH / ネットワーク構成
 - **SSH鍵**: Ed25519 (`~/.ssh/id_ed25519`)
-- **接続先サーバー (Host: rasp)**:
+- **DNS構成**: 
+    - 優先DNS: `192.168.0.200` (thales/AdGuard Home)
+    - ドメインルーティング: `.home` ドメインを thales へ強制
+- **接続先サーバー (Host: rasp / thales)**:
     - IP: `192.168.0.200`
     - User: `takamiz`
     - 認証: 鍵認証 (パスワードレスログイン設定済み)
@@ -155,4 +158,18 @@
    # ~/.bashrc に以下を追加
    # export RUSTC_WRAPPER=sccache
    # export RUSTFLAGS="-C link-arg=-fuse-ld=mold"
+   ```
+### Step 7: DNS 設定 (内部ドメイン対応)
+1. **DNS サーバーの指定**:
+   ```bash
+   sudo resolvectl dns enp4s0 192.168.0.200
+   ```
+2. **ドメインルーティングの設定**:
+   `.home` ドメイン（および既存ドメイン）を明示的に指定。
+   ```bash
+   sudo resolvectl domain enp4s0 flets-east.jp iptvf.jp ~home
+   ```
+3. **キャッシュのクリア**:
+   ```bash
+   sudo resolvectl flush-caches
    ```
