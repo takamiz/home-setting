@@ -17,6 +17,7 @@
 
 ## 3. SSH / ネットワーク
 - **SSH鍵**: Ed25519 (`~/.ssh/id_ed25519`)
+- **Wake-on-LAN (WOL)**: `legion` ホストで Magic Packet による起動設定済み。詳細は [legion.md](../hosts/legion.md) を参照。
 - **接続先サーバー (Host: rasp)**
     - **役割**: Railsデプロイ/運用用
     - **IP**: `192.168.0.200`

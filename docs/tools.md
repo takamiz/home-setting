@@ -19,5 +19,6 @@
 - **Brave Browser**: メインブラウザ
 
 ## 4. その他開発ツール
+- **ethtool**: ネットワークインターフェース設定・WOL構成用
 - **Playwright**: UIテスト
 - **cargo-leptos**: Rust Leptos 開発ツール

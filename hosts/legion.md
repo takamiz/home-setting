@@ -22,6 +22,7 @@
 
 ## 3. SSH / ネットワーク構成
 - **SSH鍵**: Ed25519 (`~/.ssh/id_ed25519`)
+- **Wake-on-LAN (WOL)**: 有効 (Magic Packet / `magic`)
 - **DNS構成**: 
     - 優先DNS: `192.168.0.200` (thales/AdGuard Home)
     - ドメインルーティング: `.home` ドメインを thales へ強制
@@ -173,3 +174,19 @@
    ```bash
    sudo resolvectl flush-caches
    ```
+
+### Step 8: Wake-on-LAN (WOL) 設定
+1. **BIOS 設定**:
+   PC 起動時に BIOS (F2/Del) に入り、`Wake on LAN` または `Power On By PCI-E` を **Enabled** に設定。
+2. **ethtool のインストール**:
+   `sudo apt install -y ethtool`
+3. **WOL の有効化 (Magic Packet)**:
+   ```bash
+   sudo ethtool -s enp4s0 wol g
+   ```
+4. **永続化 (NetworkManager / Netplan)**:
+   NetworkManager を使用している場合:
+   ```bash
+   sudo nmcli connection modify netplan-enp4s0 802-3-ethernet.wake-on-lan magic
+   ```
+   または `/etc/netplan/00-installer-config.yaml` の `enp4s0` セクションに `wakeonlan: true` を追記して `sudo netplan apply` を実行。

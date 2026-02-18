@@ -28,6 +28,7 @@
 
 - **OS**: Ubuntu 26.04 LTS (Questing Quetzal)
 - **Hostname**: `legion`
+- **WOL**: 有効 (Magic Packet)
 - **Shell**: Bash (+ Starship)
 - **Primary Editor**: Vim (CLI) / Cursor (IDE)
 - **Main Languages**: Rust, Python, Ruby, PHP
