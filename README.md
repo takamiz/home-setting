@@ -8,11 +8,19 @@
 
 ## クイックアクセス
 
-- [システム環境・ネットワーク](docs/system.md)
-- [エディタ・ツール設定 (Vim/AI)](docs/tools.md)
-- [進行中プロジェクト一覧](docs/projects.md)
-- [PC個別設定: legion](hosts/legion.md)
-- [PC個別設定: thales](hosts/thales.md)
+- [システム環境・ネットワーク](./docs/system.md)
+- [エディタ・ツール設定 (Vim/AI)](./docs/tools.md)
+- [進行中プロジェクト一覧](./docs/projects.md)
+- [PC個別設定: legion](./hosts/legion.md)
+- [PC個別設定: thales](./hosts/thales.md)
+
+## サービス一覧 (thales)
+
+- [AdGuard Home](http://adguard.home) - 広告ブロック・DNS
+- [Immich](http://immich.home) - フォトサーバー
+- [Lorenzo](http://lorenzo.home) - 株価スクリーニング
+- [Cockpit](http://cockpit.home) - サーバー管理 (9090)
+- [Munin](http://munin.home) - リソース監視
 
 ---
 
