@@ -17,8 +17,10 @@
 
 ## 3. SSH / ネットワーク
 - **SSH鍵**: Ed25519 (`~/.ssh/id_ed25519`)
+- **OpenSSH Server**: インストール済み、UFW で SSH 許可済み
+- **Tailscale**: VPN 接続済み（リモートアクセス用）
 - **Wake-on-LAN (WOL)**: `legion` ホストで Magic Packet による起動設定済み。詳細は [legion.md](../hosts/legion.md) を参照。
-- **接続先サーバー (Host: rasp)**
+- **接続先サーバー (Host: rasp / thales)**
     - **役割**: Railsデプロイ/運用用
     - **IP**: `192.168.0.200`
     - **User**: `takamiz`

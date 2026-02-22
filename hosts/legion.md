@@ -36,15 +36,31 @@
 - **Gemini CLI**: インストール・認証済み
 - **Claude Code (CLI)**: `@anthropic-ai/claude-code` インストール済み
     - エディタ連携: `vim` 設定済み
-- **Playwright**: `@playwright/cli` インストール済み
+- **Playwright**: `@playwright/test` インストール済み（ブラウザ依存含む）
+- **NotebookLM MCP**: `notebooklm-mcp-cli` (uv tool でインストール)
 
-## 5. 開発者ツール & ブラウザ
+## 5. ローカル LLM 環境
+- **Ollama**: インストール済み（systemd サービス）
+    - 登録モデル: `nemotron-jp` (NVIDIA-Nemotron-Nano-9B-v2-Japanese-Q4_K_M), `llama3.2`, `gemma2:2b`
+- **llama.cpp**: ソースビルド済み（CUDA 対応: `GGML_CUDA=ON`）
+    - パス: `~/Downloads/llama.cpp/build/bin/`
+- **CUDA**: `nvidia-cuda-toolkit` インストール済み
+
+## 6. 開発者ツール & ブラウザ
 - **ブラウザ**: Brave Browser (インストール済み)
-- **Rust / Leptos**: 
+- **IDE**: Cursor (Vim拡張導入済み) / Zed
+- **Rust / Leptos**:
     - `rustup`, `cargo-leptos`, `wasm32-unknown-unknown` 導入済み
     - 高速化ツール: `mold` (リンカ), `sccache` (コンパイルキャッシュ) 導入済み
+- **uv**: Python パッケージマネージャ (`~/.local/bin/uv`)
+- **Flameshot**: スクリーンショットツール
+- **htop / bashtop**: システムモニタ
 
-## 5. 特記事項
+## 7. VPN & リモートアクセス
+- **Tailscale**: インストール・接続済み (`tailscale up`)
+- **OpenSSH Server**: インストール済み、UFW で SSH 許可済み
+
+## 8. 特記事項
 - 特定のクレデンシャルやライブラリ依存（OpenSSL等）については、必要に応じて各CLIへのプロンプトで個別指示を行う。
 
 ---
@@ -142,8 +158,17 @@
 1. **Brave Browser**:
    `curl -fsS https://dl.brave.com/install.sh | sh`
 2. **Playwright**:
-   `sudo npm install -g @playwright/cli`
-3. **Rust & Leptos インストール**:
+   ```bash
+   npm install -D @playwright/test @types/node
+   npx playwright install --with-deps chromium
+   ```
+3. **Zed エディタ**:
+   `curl -f https://zed.dev/install.sh | sh`
+4. **uv (Python パッケージマネージャ)**:
+   `curl -LsSf https://astral.sh/uv/install.sh | sh`
+5. **ユーティリティ**:
+   `sudo apt install -y flameshot htop bashtop`
+6. **Rust & Leptos インストール**:
    ```bash
    # Rust
    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -175,7 +200,42 @@
    sudo resolvectl flush-caches
    ```
 
-### Step 8: Wake-on-LAN (WOL) 設定
+### Step 8: Tailscale & OpenSSH Server
+1. **Tailscale インストール & 接続**:
+   ```bash
+   curl -fsSL https://tailscale.com/install.sh | sh
+   sudo tailscale up
+   ```
+2. **OpenSSH Server**:
+   ```bash
+   sudo apt install -y openssh-server
+   sudo systemctl enable --now ssh
+   sudo ufw allow ssh
+   ```
+
+### Step 9: ローカル LLM 環境 (Ollama / llama.cpp)
+1. **Ollama インストール**:
+   ```bash
+   curl -fsSL https://ollama.com/install.sh | sh
+   ```
+2. **カスタムモデル登録 (例: Nemotron JP)**:
+   ```bash
+   cd ~/Downloads
+   cat <<EOF > Modelfile
+   FROM ./NVIDIA-Nemotron-Nano-9B-v2-Japanese-Q4_K_M.gguf
+   EOF
+   ollama create nemotron-jp -f Modelfile
+   ```
+3. **llama.cpp ビルド (CUDA)**:
+   ```bash
+   sudo apt install -y cmake nvidia-cuda-toolkit
+   git clone https://github.com/ggerganov/llama.cpp
+   cd llama.cpp
+   cmake -B build -DGGML_CUDA=ON
+   cmake --build build --config Release -j $(nproc)
+   ```
+
+### Step 10: Wake-on-LAN (WOL) 設定
 1. **BIOS 設定**:
    PC 起動時に BIOS (F2/Del) に入り、`Wake on LAN` または `Power On By PCI-E` を **Enabled** に設定。
 2. **ethtool のインストール**:
