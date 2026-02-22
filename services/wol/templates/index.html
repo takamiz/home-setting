@@ -102,6 +102,7 @@
         const data = await res.json();
         dot.className = "dot " + (data.online ? "online" : "offline");
         statusText.textContent = data.online ? "オンライン" : "オフライン";
+        if (!pollTimer) wakeBtn.disabled = data.online;
       } catch {
         dot.className = "dot";
         statusText.textContent = "確認失敗";
