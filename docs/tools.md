@@ -23,6 +23,9 @@
 
 ## 3. ターミナル & ブラウザ
 - **Ghostty**: モダンなターミナルエミュレータ
+    - テーマ: TokyoNight Storm
+    - フォント: JetBrains Mono 12pt + Noto Sans Mono CJK JP
+    - キーバインド: Windows 派、Quick Terminal 有効
 - **Brave Browser**: メインブラウザ
 
 ## 4. その他開発ツール

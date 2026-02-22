@@ -14,7 +14,10 @@
 - **システムデフォルト**: `vim` (update-alternatives / VISUAL / EDITOR 設定済み)
     - `crontab`, `visudo`, `git commit` 等はすべて Vim で起動
 - **IDE**: Cursor (Vim拡張導入済み)
-- **ターミナル**: Ghostty
+- **ターミナル**: Ghostty (TokyoNight Storm / JetBrains Mono 12pt)
+    - フォント: JetBrains Mono + Noto Sans Mono CJK JP (日本語フォールバック)
+    - キーバインド: Windows 派 (Ctrl+Shift+C/V, Ctrl+Shift+T/W, Ctrl+Tab 等)
+    - Quick Terminal: `Ctrl+`` でドロップダウン呼び出し
 - **Git設定**:
     - User Name: `takamiz`
     - User Email: `takamiz@gmail.com`
@@ -97,8 +100,29 @@
    curl -sS https://starship.rs/install.sh | sudo sh
    # ~/.bashrc に eval "$(starship init bash)" を追加
    ```
-5. **Ghostty インストール**:
+5. **JetBrains Mono フォントインストール**:
+   ```bash
+   cd /tmp
+   curl -sLO https://github.com/JetBrains/JetBrainsMono/releases/download/v2.304/JetBrainsMono-2.304.zip
+   unzip -qo JetBrainsMono-2.304.zip -d JetBrainsMono
+   mkdir -p ~/.local/share/fonts
+   cp JetBrainsMono/fonts/ttf/*.ttf ~/.local/share/fonts/
+   fc-cache -f
+   ```
+6. **Ghostty インストール & 設定**:
    公式サイトより DEB パッケージ等をダウンロードしてインストール。
+   設定ファイル: `~/.config/ghostty/config`
+   ```
+   # テーマ・フォント
+   theme = dark:TokyoNight Storm,light:TokyoNight Day
+   font-family = JetBrains Mono
+   font-family = Noto Sans Mono CJK JP
+   font-size = 12
+
+   # 日本語入力 (IBus)
+   grapheme-width-method = unicode
+   selection-clear-on-typing = false
+   ```
 
 ### Step 3: Git & SSH
 1. **Git & GitHub CLI 設定**:
