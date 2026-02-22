@@ -21,6 +21,7 @@
 - [Lorenzo](http://lorenzo.home) - 株価スクリーニング
 - [Cockpit](http://cockpit.home) - サーバー管理 (9090)
 - [Munin](http://munin.home) - リソース監視
+- [WOL](http://wol.home) - Wake-on-LAN (legion 起動)
 
 ---
 

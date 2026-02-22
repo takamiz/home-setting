@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wake-on-LAN</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #24283b;
+      color: #c0caf5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background: #1a1b26;
+      border-radius: 16px;
+      padding: 48px 40px;
+      text-align: center;
+      width: 360px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: #7aa2f7;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 32px;
+      font-size: 0.95rem;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #565f89;
+      transition: background 0.3s;
+    }
+
+    .dot.online  { background: #9ece6a; box-shadow: 0 0 8px #9ece6a88; }
+    .dot.offline { background: #f7768e; }
+
+    button {
+      background: #7aa2f7;
+      color: #1a1b26;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 32px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      width: 100%;
+    }
+
+    button:hover { background: #89b4fa; }
+    button:active { transform: scale(0.97); }
+    button:disabled { background: #565f89; cursor: not-allowed; }
+
+    .message {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      min-height: 1.2em;
+      color: #a9b1d6;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Wake-on-LAN</h1>
+    <div class="status">
+      <span class="dot" id="dot"></span>
+      <span id="status-text">確認中...</span>
+    </div>
+    <button id="wake-btn" onclick="wake()">Legion を起動</button>
+    <div class="message" id="msg"></div>
+  </div>
+
+  <script>
+    const dot = document.getElementById("dot");
+    const statusText = document.getElementById("status-text");
+    const wakeBtn = document.getElementById("wake-btn");
+    const msg = document.getElementById("msg");
+    let pollTimer = null;
+
+    async function checkStatus() {
+      try {
+        const res = await fetch("/status");
+        const data = await res.json();
+        dot.className = "dot " + (data.online ? "online" : "offline");
+        statusText.textContent = data.online ? "オンライン" : "オフライン";
+      } catch {
+        dot.className = "dot";
+        statusText.textContent = "確認失敗";
+      }
+    }
+
+    async function wake() {
+      wakeBtn.disabled = true;
+      msg.textContent = "マジックパケット送信中...";
+      try {
+        const res = await fetch("/wake", { method: "POST" });
+        const data = await res.json();
+        if (data.success) {
+          msg.textContent = "送信完了。起動を待っています...";
+          startPolling();
+        } else {
+          msg.textContent = "送信失敗: " + data.message;
+          wakeBtn.disabled = false;
+        }
+      } catch {
+        msg.textContent = "通信エラー";
+        wakeBtn.disabled = false;
+      }
+    }
+
+    function startPolling() {
+      let attempts = 0;
+      const maxAttempts = 24;
+      if (pollTimer) clearInterval(pollTimer);
+      pollTimer = setInterval(async () => {
+        attempts++;
+        await checkStatus();
+        if (dot.classList.contains("online") || attempts >= maxAttempts) {
+          clearInterval(pollTimer);
+          pollTimer = null;
+          wakeBtn.disabled = false;
+          if (dot.classList.contains("online")) {
+            msg.textContent = "Legion が起動しました";
+          } else {
+            msg.textContent = "タイムアウト。起動を確認できませんでした";
+          }
+        }
+      }, 5000);
+    }
+
+    checkStatus();
+  </script>
+</body>
+</html>

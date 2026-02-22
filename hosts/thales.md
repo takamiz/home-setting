@@ -16,6 +16,7 @@
 ## 3. 稼働サービス
 
 ### Docker コンテナ
+- **wol**: `http://wol.home` (Port 8080) - Wake-on-LAN (legion 起動)
 - **lorenzo**: `http://lorenzo.home` (Port 3001)
 - **immich**: `http://immich.home` (Port 2283) - 自宅フォトサーバーセット (Up 9 days)
     - `immich_server`
@@ -59,10 +60,12 @@ filtering:
       answer: 192.168.0.200
     - domain: munin.home
       answer: 192.168.0.200
+    - domain: wol.home
+      answer: 192.168.0.200
 ```
 
 ### Apache2 (リバースプロキシ)
-`/etc/apache2/sites-available/` に各サービス用の `.conf` ファイルを作成し、`ProxyPass` を設定済み（`lorenzo`, `immich`, `adguard`, `cockpit`, `munin-site`）。
+`/etc/apache2/sites-available/` に各サービス用の `.conf` ファイルを作成し、`ProxyPass` を設定済み（`wol`, `lorenzo`, `immich`, `adguard`, `cockpit`, `munin-site`）。
 
 ## 管理・メンテナンス
 - ログイン: `ssh thales`
