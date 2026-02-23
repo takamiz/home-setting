@@ -1,0 +1,29 @@
+# .claude Cache & Projects
+.claude/cache/
+.claude/debug/
+.claude/image-cache/
+.claude/paste-cache/
+.claude/plugins/
+.claude/projects/
+.claude/telemetry/
+.claude/session-env
+.claude/history.jsonl
+.claude/file-history
+.claude/.credentials.json
+.claude/backups/
+.claude/journal/
+.claude/plans/
+.claude/shell-snapshots/
+.claude/tasks/
+.claude/todos/
+
+# .gemini Cache & Tmp
+.gemini/tmp/
+.gemini/history/
+.gemini/antigravity/
+.gemini/google_accounts.json
+.gemini/oauth_creds.json
+.gemini/state.json
+
+# Scripts
+*.log

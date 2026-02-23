@@ -1,0 +1,26 @@
+{
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    },
+    "folderTrust": {
+      "enabled": true
+    }
+  },
+  "general": {
+    "previewFeatures": true,
+    "enablePromptCompletion": true
+  },
+  "ide": {
+    "hasSeenNudge": true,
+    "enabled": true
+  },
+  "ui": {
+    "theme": "Default Light"
+  },
+  "context": {
+    "includeDirectories": [
+        "/home/takamiz/.gemini"
+    ]
+  }
+}

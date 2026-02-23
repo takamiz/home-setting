@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "*",
+      "Bash(*)",
+      "Bash(*:*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "Read(*)",
+      "Write(*)"
+    ]
+  },
+  "model": "sonnet",
+  "enabledPlugins": {
+    "rust-analyzer-lsp@claude-plugins-official": true
+  },
+  "effortLevel": "medium",
+  "preferredNotifChannel": "terminal_bell"
+}
