@@ -18,12 +18,14 @@
   - PostgreSQL: `https://apt.postgresql.org/pub/repos/apt trixie-pgdg`
   - TimescaleDB: `https://packagecloud.io/timescale/timescaledb/debian/ bookworm` (互換利用)
   - Tailscale: `https://pkgs.tailscale.com/stable/debian trixie`
+  - **Grafana**: `https://apt.grafana.com stable main`
 
 ## 3. 稼働サービス一覧
 
 | サービス名 | ポート (Host) | ローカルURL (HTTP) | 備考 / 認証情報 |
 | :--- | :--- | :--- | :--- |
 | **Apache2** | `80` | - | リバースプロキシ / `*.thales.home` の入口 |
+| **Grafana** | `3101` | `http://grafana.thales.home` | 監視ダッシュボード / Admin: `admin` |
 | **AdGuard Home** | `3000`, `53` | `http://adguard.thales.home` | DNSリライト・広告ブロック (Snap) |
 | **PostgreSQL 17** | `5432` | - | **Native (TimescaleDB 2.25.2)** / User: `postgres`, `takamiz` / Pass: `postgres` |
 | **Stock Market API** | `3002` | `http://stock.thales.home` | 株式データ同期・分析システム (Rust) |
@@ -34,29 +36,37 @@
 | **Munin** | `4949` | `http://munin.thales.home` | リソース監視 (Apache Direct Alias) |
 | **WayVNC** | `5900` | - | リモートデスクトップ |
 | **Samba** | `139`, `445` | - | ファイル共有 (smbd/nmbd) |
-| **PCP** | `44321-3` | - | Performance Co-Pilot (メトリクス収集) |
+| **Loki** | `3100` | - | ログ集約エンジン (Binary) |
+| **Prometheus** | `9091` | - | メトリクス集約サーバー (Port 9091 に変更済) |
+| **Promtail** | `9080` | - | ログ収集エージェント (Binary) |
 
 ### 内部専用サービス (Docker Network)
 - **immich_postgres**: PostgreSQL 16 (pgvecto-rs) / Port `5432` (内部のみ) / User: `postgres` / Pass: `postgres`
 - **immich_redis**: Redis (内部)
 
-## 4. ログ管理 (Logrotate)
-各サービスのログは `/etc/logrotate.d/` 以下で以下の通り管理されている。
+## 4. ログ & メトリクス管理 (Grafana Stack)
+各サービスのログとメトリクスは **Grafana** に集約されている。
 
-| ログ対象 | 頻度 | 保存数 | 備考 |
+| 収集対象 | ツール | ポート | 備考 |
 | :--- | :--- | :--- | :--- |
-| **Apache2** (`/var/log/apache2/*.log`) | Daily | 14 | `stock_access.log` 等を含む |
-| **PostgreSQL** (`/var/log/postgresql/*.log`) | Weekly | 10 | `copytruncate` 設定済み |
-| **Stock Market** (`~/stock-market/logs/*.log`) | Daily | 14 | カスタム設定済み |
-| **Docker Containers** (`/var/lib/docker/containers/*/*.log`) | Daily | 7 | `copytruncate` 設定済み |
-| **Lorenzo** (`~/lorenzo/data/sync.log`) | Daily | 7 | カスタム設定済み |
+| **ログ (Logs)** | Loki + Promtail | 3100, 9080 | システム, Apache2, Postgres, Stock |
+| **システム (Node)** | Node Exporter | 9100 | CPU, RAM, Disk, Network |
+| **DB (PostgreSQL)** | Postgres Exporter | 9187 | Queries, Locks, Connections |
+| **集約サーバー** | Prometheus | 9091 | 15s スクリーピング間隔 |
 
 ## 5. 各サービス詳細設定
+
+### Monitoring (Prometheus + Loki + Grafana)
+- **Loki**: `~/services/loki/loki-linux-arm64` (Port 3100)
+- **Promtail**: `~/services/loki/promtail-linux-arm64` (Port 9080)
+- **Prometheus**: Port 9091 (Native) - Cockpit との競合回避のため
+- **Grafana**: Port 3101 (Apache プロキシ `http://grafana.thales.home`)
+- **設定**: `systemd --user` (`loki.service`, `promtail.service`) および `systemctl` で管理。
 
 ### Stock Market System
 - **構成**: Rust バイナリ (`bin/stock-market`, `bin/server`)
 - **Database**: Native PostgreSQL 17 (`stock_market` DB)
-- **実行**: `systemd --user` (`stock-server.service`) で管理。`loginctl enable-linger takamiz` 設定済み。
+- **実行**: `systemctl --user status stock-server.service`
 
 ### Immich (Docker)
 - **構成**: `immich_server`, `immich_machine_learning`, `immich_postgres`, `immich_redis`
@@ -69,3 +79,4 @@
 - **システム更新**: `sudo apt update && sudo apt upgrade`
 - **PostgreSQL 接続確認**: `psql -h 192.168.0.200 -U postgres` (LAN内から)
 - **Docker管理**: `docker ps`, `docker compose up -d`
+- **監視管理**: `sudo systemctl status prometheus grafana-server`
