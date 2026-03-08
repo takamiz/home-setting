@@ -86,7 +86,11 @@
 4. **APT Modernization**:
    `sudo apt modernize-sources` を実行して最新形式に移行。
 5. **Sudoers 設定**:
-   `sudo visudo` で `NOPASSWD` 等を設定（必要に応じて）。
+   `takamiz` ユーザーに対してパスワード不要で `sudo` を実行できるよう設定。
+   ```bash
+   echo "takamiz ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/takamiz
+   sudo chmod 0440 /etc/sudoers.d/takamiz
+   ```
 
 ### Step 2: 必須パッケージ & シェル
 1. **基本ツールのインストール**:
@@ -161,6 +165,9 @@
     sudo usermod -aG docker $USER
     # 権限エラーが出る場合は以下を実行
     sudo chmod 666 /var/run/docker.sock
+    
+    # docker-compose (ハイフンあり) のシンボリックリンク作成
+    sudo ln -sf /usr/libexec/docker/cli-plugins/docker-compose /usr/bin/docker-compose
     ```
 
 ### Step 5: AI 開発環境 (Antigravity含む)

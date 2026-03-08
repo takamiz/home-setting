@@ -16,7 +16,9 @@
     "enabled": true
   },
   "ui": {
-    "theme": "Default Light"
+    "theme": "GitHub Dark",
+    "showShortcutsHint": false,
+    "hideFooter": true
   },
   "context": {
     "includeDirectories": [

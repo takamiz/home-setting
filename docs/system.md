@@ -10,6 +10,7 @@
     - Vimモード有効: `set -o vi`
     - プロンプト: Starship導入済み (`~ ❯` スタイル)
 - **ディレクトリ構成**: 英語化済み (`~/Downloads`, `~/Desktop`, `~/Documents` 等)
+- **権限**: `takamiz` ユーザーはパスワードなしで `sudo` 実行可能 (`/etc/sudoers.d/takamiz`)
 
 ## 2. パッケージ管理
 - **形式**: DEB822 (`/etc/apt/sources.list.d/ubuntu.sources`)

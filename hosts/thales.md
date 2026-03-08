@@ -13,60 +13,57 @@
 - **認証**: 鍵認証 (`~/.ssh/id_ed25519`)
 - **Sudo**: `NOPASSWD` 設定済み
 
-## 3. 稼働サービス
+## 3. 稼働サービス一覧
 
-### Docker コンテナ
-- **wol**: `http://wol.home` (Port 8080) - Wake-on-LAN (legion 起動)
-- **lorenzo**: `http://lorenzo.home` (Port 3001)
-- **immich**: `http://immich.home` (Port 2283) - 自宅フォトサーバーセット (Up 9 days)
-    - `immich_server`
-    - `immich_machine_learning`
-    - `immich_postgres`
-    - `immich_redis`
+| サービス名 | ポート (Host) | ローカルURL (HTTP) | 備考 / 認証情報 |
+| :--- | :--- | :--- | :--- |
+| **Apache2** | `80` | - | リバースプロキシ / `*.thales.home` の入口 |
+| **AdGuard Home** | `3000`, `53` | `http://adguard.thales.home` | DNSリライト・広告ブロック (Snap) |
+| **PostgreSQL 17** | `5432` | - | **Native (TimescaleDB 2.25.2)** / User: `postgres`, `takamiz` / Pass: `postgres` |
+| **Stock Market API** | `3002` | `http://stock.thales.home` | 株式データ同期・分析システム (Rust) |
+| **Lorenzo** | `3001` | `http://lorenzo.thales.home` | 蔵書管理システム (Docker) |
+| **Immich** | `2283` | `http://immich.thales.home` | 自宅フォトサーバー (Docker) |
+| **WOL (Web UI)** | `8080` | `http://wol.thales.home` | Wake-on-LAN (legion 起動用) / Docker |
+| **Cockpit** | `9090` | `http://cockpit.thales.home` | サーバー管理 Web UI |
+| **Munin** | `4949` | `http://munin.thales.home` | リソース監視 (Apache Direct Alias) |
+| **WayVNC** | `5900` | - | リモートデスクトップ |
+| **Samba** | `139`, `445` | - | ファイル共有 (smbd/nmbd) |
+| **PCP** | `44321-3` | - | Performance Co-Pilot (メトリクス収集) |
 
-### Web / システムサービス
-- **AdGuard Home**: `http://adguard.home` (Port 3000) - 広告ブロック・DNSリライト
-- **Cockpit**: `http://cockpit.home` (Port 9090) - サーバー管理
-- **Munin**: `http://munin.home` - リソース監視 (Apache Direct Alias)
-- **Apache2**: ポート `80` (HTTP) - リバースプロキシとして稼働
-- **Samba**: ファイル共有 (smbd)
-- **Tailscale**: メッシュVPN (tailscaled)
+### 内部専用サービス (Docker Network)
+- **immich_postgres**: PostgreSQL 16 (pgvecto-rs) / Port `5432` (内部のみ) / User: `postgres` / Pass: `postgres`
+- **immich_redis**: Redis (内部)
 
-## 4. 性能・リソース
-- **メモリ**: 3.7GiB (Total)
-- **スワップ**: 2.0GiB (Full usage observed)
-- **ディスク**: `/dev/sdb2` (235G, 使用量 9%)
+## 4. 各サービス詳細設定
 
-## 4. 特記事項
-- Raspberry Pi 上で動作するデプロイ・運用用のサーバー。
-- Debian trixie (Debian 13) ベースの OS。
+### Stock Market System
+- **ディレクトリ**: `~/stock-market`
+- **主要構成**:
+    - **Backend**: Rust バイナリ (`bin/stock-market`, `bin/server`)
+    - **Database**: Native PostgreSQL 17 (`stock_market` データベースを使用)
+    - **Data**: `data/archives` に CSV/GZ 形式で株価データを保持
+- **Domain**: `stock.thales.home` (Port 3002 へプロキシ)
+
+### Immich (Docker)
+- **構成**: `immich_server`, `immich_machine_learning`, `immich_postgres`, `immich_redis`
+- **認証**: User: `postgres` / Pass: `postgres`
+- **Domain**: `immich.thales.home` (Port 2283 へプロキシ)
 
 ---
 
-## DNS / リバースプロキシ詳細設定
+## DNS / リバースプロキシ構成詳細
 
 ### AdGuard Home (DNSリライト)
-以下の設定を `AdGuardHome.yaml` または Web UI から適用済み：
-```yaml
-filtering:
-  rewrites:
-    - domain: lorenzo.home
-      answer: 192.168.0.200
-    - domain: immich.home
-      answer: 192.168.0.200
-    - domain: adguard.home
-      answer: 192.168.0.200
-    - domain: cockpit.home
-      answer: 192.168.0.200
-    - domain: munin.home
-      answer: 192.168.0.200
-    - domain: wol.home
-      answer: 192.168.0.200
-```
+- `*.thales.home` 形式のドメインをすべて `192.168.0.200` (`thales`) に解決。
+- 設定ファイル: `/var/snap/adguard-home/current/AdGuardHome/AdGuardHome.yaml`
 
 ### Apache2 (リバースプロキシ)
-`/etc/apache2/sites-available/` に各サービス用の `.conf` ファイルを作成し、`ProxyPass` を設定済み（`wol`, `lorenzo`, `immich`, `adguard`, `cockpit`, `munin-site`）。
+- 設定ディレクトリ: `/etc/apache2/sites-available/`
+- 各サービスごとに `.conf` ファイルを作成し、`ProxyPass` で内部ポートへ転送。
+- `ServerName` はすべて `*.thales.home` 形式に統一。
 
 ## 管理・メンテナンス
-- ログイン: `ssh thales`
-- 更新: `sudo apt update && sudo apt upgrade`
+- **SSHログイン**: `ssh thales`
+- **システム更新**: `sudo apt update && sudo apt upgrade`
+- **PostgreSQL 接続確認**: `psql -h 192.168.0.200 -U postgres` (LAN内から)
+- **Docker管理**: `docker ps`, `docker compose up -d`
