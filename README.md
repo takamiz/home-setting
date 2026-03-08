@@ -14,21 +14,23 @@
 - [PC個別設定: legion](./hosts/legion.md)
 - [PC個別設定: thales](./hosts/thales.md)
 
-## サービス一覧 (thales)
+## サービス一覧 (thales) - Tailscale 経由でアクセス可能
 
-- [AdGuard Home](http://adguard.home) - 広告ブロック・DNS
-- [Immich](http://immich.home) - フォトサーバー
-- [Lorenzo](http://lorenzo.home) - 株価スクリーニング
-- [Cockpit](http://cockpit.home) - サーバー管理 (9090)
-- [Munin](http://munin.home) - リソース監視
-- [WOL](http://wol.home) - Wake-on-LAN (legion 起動)
+- 📡 [AdGuard Home](http://adguard.thales.home) - 広告ブロック・DNS設定
+- 🖼️ [Immich](http://immich.thales.home) - フォトサーバー
+- 📊 [Grafana](http://grafana.thales.home) - システム監視
+- 📈 [Stock Market](http://stock.thales.home) - 株価分析
+- 📚 [Lorenzo](http://lorenzo.thales.home) - 蔵書管理
+- 💻 [Cockpit](http://cockpit.thales.home) - サーバー管理
+- ⚡ [WOL (Web UI)](http://wol.thales.home) - legion 起動
 
 ---
 
-## 基本情報 (2026-02-17 時点)
+## 基本情報 (2026-03-08 更新)
 
 - **OS**: Ubuntu 26.04 LTS (Questing Quetzal)
-- **Hostname**: `legion`
+- **Hostname**: `legion` (100.95.80.2)
+- **Tailscale DNS**: `*.thales.home` -> `100.100.163.37` (thales)
 - **WOL**: 有効 (Magic Packet)
 - **Shell**: Bash (+ Starship)
 - **Primary Editor**: Vim (CLI) / Cursor (IDE)
