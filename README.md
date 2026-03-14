@@ -16,13 +16,13 @@
 
 ## サービス一覧 (thales) - Tailscale 経由でアクセス可能
 
-- 📡 [AdGuard Home](http://adguard.thales.home) `http://adguard.thales.home` - 広告ブロック・DNS設定
-- 🖼️ [Immich](http://immich.thales.home) `http://immich.thales.home` - フォトサーバー
-- 📊 [Grafana](http://grafana.thales.home) `http://grafana.thales.home` - システム監視
-- 📈 [Stock Market](http://stock.thales.home) `http://stock.thales.home` - 株価分析
-- 📚 [Lorenzo](http://lorenzo.thales.home) `http://lorenzo.thales.home` - 蔵書管理
-- 💻 [Cockpit](http://cockpit.thales.home) `http://cockpit.thales.home` - サーバー管理
-- ⚡ [WOL (Web UI)](http://wol.thales.home) `http://wol.thales.home` - legion 起動
+- 📡 [AdGuard Home](http://adguard.thales.home) - 広告ブロック・DNS設定
+- 🖼️ [Immich](http://immich.thales.home) - フォトサーバー
+- 📊 [Grafana](http://grafana.thales.home) - システム監視
+- 📈 [Stock Market](http://stock.thales.home) - 株価分析
+- 📚 [Lorenzo](http://lorenzo.thales.home) - 蔵書管理
+- 💻 [Cockpit](http://cockpit.thales.home) - サーバー管理
+- ⚡ [WOL (Web UI)](http://wol.thales.home) - legion 起動
 
 ---
 
