@@ -9,6 +9,7 @@
 ## クイックアクセス
 
 - [システム環境・ネットワーク](./docs/system.md)
+- [Tailscale 設定](./docs/tailscale.md)
 - [エディタ・ツール設定 (Vim/AI)](./docs/tools.md)
 - [進行中プロジェクト一覧](./docs/projects.md)
 - [PC個別設定: legion](./hosts/legion.md)
