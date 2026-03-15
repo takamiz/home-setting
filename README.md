@@ -17,13 +17,13 @@
 
 ## サービス一覧 (thales) - Tailscale 経由でアクセス可能
 
-- 📡 [AdGuard Home](http://adguard.thales.home) - 広告ブロック・DNS設定
-- 🖼️ [Immich](http://immich.thales.home) - フォトサーバー
-- 📊 [Grafana](http://grafana.thales.home) - システム監視
-- 📈 [Stock Market](http://stock.thales.home) - 株価分析
-- 📚 [Lorenzo](http://lorenzo.thales.home) - 蔵書管理
-- 💻 [Cockpit](http://cockpit.thales.home) - サーバー管理
-- ⚡ [WOL (Web UI)](http://wol.thales.home) - legion 起動
+- 📡 [AdGuard Home](http://adguard.home) - 広告ブロック・DNS設定
+- 🖼️ [Immich](http://immich.home) - フォトサーバー
+- 📊 [Grafana](http://grafana.home) - システム監視
+- 📈 [Stock Market](http://stock.home) - 株価分析
+- 📚 [Lorenzo](http://lorenzo.home) - 蔵書管理
+- 💻 [Cockpit](http://cockpit.home) - サーバー管理
+- ⚡ [WOL (Web UI)](http://wol.home) - legion 起動
 
 ---
 
@@ -31,7 +31,7 @@
 
 - **OS**: Ubuntu 26.04 LTS (Questing Quetzal)
 - **Hostname**: `legion` (100.95.80.2)
-- **Tailscale DNS**: `*.thales.home` -> `100.100.163.37` (thales)
+- **Tailscale DNS**: `*.home` -> `100.100.163.37` (thales)
 - **WOL**: 有効 (Magic Packet)
 - **Shell**: Bash (+ Starship)
 - **Primary Editor**: Vim (CLI) / Cursor (IDE)

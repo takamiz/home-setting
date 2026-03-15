@@ -21,11 +21,11 @@
 - **OpenSSH Server**: インストール済み、UFW で SSH 許可済み
 - **Tailscale**: VPN 接続済み（リモートアクセス用）
     - **MagicDNS**: 有効
-    - **Split DNS**: `thales.home` ドメインを `thales` (100.100.163.37) に割り当て済み
+    - **グローバルDNS + Search Paths**: `home` を search path に登録、AdGuard Home (`100.100.163.37`) をグローバルDNSとして設定
 - **DNS / AdGuard Home**:
     - `thales` (192.168.0.200) で AdGuard Home が稼働
-    - **DNS 書き換え**: `*.thales.home` を Tailscale IP (`100.100.163.37`) に解決
-    - 外出先からでも Tailscale 接続中であれば `http://[サービス].thales.home` でアクセス可能
+    - **DNS 書き換え**: `*.home` を Tailscale IP (`100.100.163.37`) に解決
+    - 外出先からでも Tailscale 接続中であれば `http://[サービス].home` でアクセス可能
 - **Wake-on-LAN (WOL)**: `legion` ホストで Magic Packet による起動設定済み。詳細は [legion.md](../hosts/legion.md) を参照。
 - **接続先サーバー (Host: thales)**
     - **役割**: Railsデプロイ/運用/DNS/メディアサーバー

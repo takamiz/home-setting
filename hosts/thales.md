@@ -12,7 +12,7 @@
 
 ## 2. ネットワーク & パッケージリポジトリ
 - **SSH**: 鍵認証 (`~/.ssh/id_ed25519`), `NOPASSWD` 設定済み
-- **DNS (AdGuard Home)**: Snap経由。`*.thales.home` -> `192.168.0.200`
+- **DNS (AdGuard Home)**: Snap経由。`*.home` -> `100.100.163.37`
 - **リポジトリ (APT Sources)**: 再構築時に以下の追加が必要
   - Docker: `https://download.docker.com/linux/debian trixie`
   - PostgreSQL: `https://apt.postgresql.org/pub/repos/apt trixie-pgdg`
@@ -24,16 +24,16 @@
 
 | サービス名 | ポート (Host) | ローカルURL (HTTP) | 備考 / 認証情報 |
 | :--- | :--- | :--- | :--- |
-| **Apache2** | `80` | - | リバースプロキシ / `*.thales.home` の入口 |
-| **Grafana** | `3101` | `http://grafana.thales.home` | 監視ダッシュボード / Admin: `admin` |
-| **AdGuard Home** | `3000`, `53` | `http://adguard.thales.home` | DNSリライト・広告ブロック (Snap) |
+| **Apache2** | `80` | - | リバースプロキシ / `*.home` の入口 |
+| **Grafana** | `3101` | `http://grafana.home` | 監視ダッシュボード / Admin: `admin` |
+| **AdGuard Home** | `3000`, `53` | `http://adguard.home` | DNSリライト・広告ブロック (Snap) |
 | **PostgreSQL 17** | `5432` | - | **Native (TimescaleDB 2.25.2)** / User: `postgres`, `takamiz` / Pass: `postgres` |
-| **Stock Market API** | `3002` | `http://stock.thales.home` | 株式データ同期・分析システム (Rust) |
-| **Lorenzo** | `3001` | `http://lorenzo.thales.home` | 蔵書管理システム (Docker) |
-| **Immich** | `2283` | `http://immich.thales.home` | 自宅フォトサーバー (Docker) |
-| **WOL (Web UI)** | `8080` | `http://wol.thales.home` | Wake-on-LAN (legion 起動用) / Docker |
-| **Cockpit** | `9090` | `http://cockpit.thales.home` | サーバー管理 Web UI |
-| **Munin** | `4949` | `http://munin.thales.home` | リソース監視 (Apache Direct Alias) |
+| **Stock Market API** | `3002` | `http://stock.home` | 株式データ同期・分析システム (Rust) |
+| **Lorenzo** | `3001` | `http://lorenzo.home` | 蔵書管理システム (Docker) |
+| **Immich** | `2283` | `http://immich.home` | 自宅フォトサーバー (Docker) |
+| **WOL (Web UI)** | `8080` | `http://wol.home` | Wake-on-LAN (legion 起動用) / Docker |
+| **Cockpit** | `9090` | `http://cockpit.home` | サーバー管理 Web UI |
+| **Munin** | `4949` | `http://munin.home` | リソース監視 (Apache Direct Alias) |
 | **WayVNC** | `5900` | - | リモートデスクトップ |
 | **Samba** | `139`, `445` | - | ファイル共有 (smbd/nmbd) |
 | **Loki** | `3100` | - | ログ集約エンジン (Binary) |
@@ -60,7 +60,7 @@
 - **Loki**: `~/services/loki/loki-linux-arm64` (Port 3100)
 - **Promtail**: `~/services/loki/promtail-linux-arm64` (Port 9080)
 - **Prometheus**: Port 9091 (Native) - Cockpit との競合回避のため
-- **Grafana**: Port 3101 (Apache プロキシ `http://grafana.thales.home`)
+- **Grafana**: Port 3101 (Apache プロキシ `http://grafana.home`)
 - **設定**: `systemd --user` (`loki.service`, `promtail.service`) および `systemctl` で管理。
 
 ### Stock Market System
