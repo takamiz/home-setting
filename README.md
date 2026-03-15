@@ -17,6 +17,8 @@
 
 ## サービス一覧 (thales) - Tailscale 経由でアクセス可能
 
+### ショートURL（`*.home` / LAN + Tailscale 両対応）
+
 - 📡 [AdGuard Home](http://adguard.home) - 広告ブロック・DNS設定
 - 🖼️ [Immich](http://immich.home) - フォトサーバー
 - 📊 [Grafana](http://grafana.home) - システム監視
@@ -24,6 +26,17 @@
 - 📚 [Lorenzo](http://lorenzo.home) - 蔵書管理
 - 💻 [Cockpit](http://cockpit.home) - サーバー管理
 - ⚡ [WOL (Web UI)](http://wol.home) - legion 起動
+
+### Tailscale Serve URL（HTTPS / Tailscale 接続時のみ）
+
+- 📡 [AdGuard Home](https://thales.tail2346aa.ts.net/adguard)
+- 🖼️ [Immich](https://thales.tail2346aa.ts.net/immich)
+- 📊 [Grafana](https://thales.tail2346aa.ts.net/grafana)
+- 📈 [Stock Market](https://thales.tail2346aa.ts.net/stock)
+- 📚 [Lorenzo](https://thales.tail2346aa.ts.net/lorenzo)
+- 💻 [Cockpit](https://thales.tail2346aa.ts.net/cockpit)
+- ⚡ [WOL (Web UI)](https://thales.tail2346aa.ts.net/wol)
+- 📉 [Munin](https://thales.tail2346aa.ts.net/munin)
 
 ---
 
