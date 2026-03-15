@@ -63,7 +63,21 @@
 - **Tailscale**: インストール・接続済み (`tailscale up`)
 - **OpenSSH Server**: インストール済み、UFW で SSH 許可済み
 
-## 8. 特記事項
+## 8. ローカルサービス (Docker)
+
+サービスの compose ファイルは `~/services/<name>/docker-compose.yml` に配置。
+
+| サービス名 | ポート | URL | 備考 |
+| :--- | :--- | :--- | :--- |
+| **SonarQube Community** | `9000` | `http://localhost:9000` | コード品質解析 / admin:admin (初回変更必須) |
+
+### SonarQube
+- **構成**: `~/services/sonarqube/docker-compose.yml`
+- **イメージ**: `sonarqube:community` + `postgres:17` (専用コンテナ)
+- **起動**: `cd ~/services/sonarqube && docker compose up -d`
+- **停止**: `docker compose stop` (データ保持) / `docker compose down` (コンテナ削除)
+
+## 9. 特記事項
 - 特定のクレデンシャルやライブラリ依存（OpenSSL等）については、必要に応じて各CLIへのプロンプトで個別指示を行う。
 
 ---
