@@ -40,10 +40,24 @@ update_npm() {
 # ---------------------------------------------------------------
 update_claude() {
     info "Updating claude..."
+
+    # If not installed, install via native installer
     if ! command -v claude &>/dev/null; then
-        warn "claude not found, skipping"
+        warn "claude not found, installing via native installer..."
+        curl -fsSL https://claude.ai/install.sh | bash
+        success "claude installed"
         return
     fi
+
+    # If installed via npm (deprecated), migrate to native installer
+    if npm list -g @anthropic-ai/claude-code &>/dev/null 2>&1; then
+        warn "claude is installed via npm (deprecated). Migrating to native installer..."
+        curl -fsSL https://claude.ai/install.sh | bash
+        npm uninstall -g @anthropic-ai/claude-code
+        success "claude migrated to native installer"
+        return
+    fi
+
     local before
     before=$(claude --version 2>/dev/null | head -1 || echo "unknown")
     claude update
