@@ -26,7 +26,7 @@
 | 📚 Lorenzo | [lorenzo.home](http://lorenzo.home) | [/lorenzo](https://thales.tail2346aa.ts.net/lorenzo) |
 | 💻 Cockpit | [cockpit.home](http://cockpit.home) | [/cockpit](https://thales.tail2346aa.ts.net/cockpit) |
 | ⚡ WOL | [wol.home](http://wol.home) | [/wol](https://thales.tail2346aa.ts.net/wol) |
-| 🔧 Router | `192.168.0.1` | [/router](https://thales.tail2346aa.ts.net/router) |
+| 🔧 Router | [router.home](http://router.home) | [/router](https://thales.tail2346aa.ts.net/router) |
 
 > `*.home`: LAN (DHCP経由) + Tailscale 両対応。`https://thales.tail2346aa.ts.net`: Tailscale Serve 経由 HTTPS。
 
