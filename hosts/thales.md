@@ -99,6 +99,7 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 | `https://thales.tail2346aa.ts.net/cockpit` | `localhost:9090` |
 | `https://thales.tail2346aa.ts.net/wol` | `localhost:8080` |
 | `https://thales.tail2346aa.ts.net/munin` | `localhost:4949` |
+| `https://thales.tail2346aa.ts.net/router` | `192.168.0.1` (ルーター管理画面) |
 
 ---
 
