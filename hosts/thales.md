@@ -24,7 +24,7 @@
 
 | サービス名 | ポート (Host) | ローカルURL (HTTP) | 備考 / 認証情報 |
 | :--- | :--- | :--- | :--- |
-| **Apache2** | `80` | - | リバースプロキシ / `*.home` の入口 |
+| **Apache2** | `80` | - | リバースプロキシ / `*.home` および `thales.tail2346aa.ts.net` の入口 |
 | **Grafana** | `3101` | `http://grafana.home` | 監視ダッシュボード / Admin: `admin` |
 | **AdGuard Home** | `3000`, `53` | `http://adguard.home` | DNSリライト・広告ブロック (Snap) |
 | **PostgreSQL 17** | `5432` | - | **Native (TimescaleDB 2.25.2)** / User: `postgres`, `takamiz` / Pass: `postgres` |
@@ -71,6 +71,34 @@
 ### Immich (Docker)
 - **構成**: `immich_server`, `immich_machine_learning`, `immich_postgres`, `immich_redis`
 - **認証**: User: `postgres` / Pass: `postgres`
+
+---
+
+## 6. Tailscale Serve 設定
+
+`tailscale serve` でポート80（Apache）をTailscaleネットワークに公開している。
+
+```bash
+# 設定確認
+tailscale serve status
+
+# 設定（初回 or 再構築時）
+sudo tailscale set --operator=takamiz
+tailscale serve --bg http://localhost:80
+```
+
+Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルーティング:
+
+| パス | 転送先 |
+| :--- | :--- |
+| `https://thales.tail2346aa.ts.net/adguard` | `localhost:3000` |
+| `https://thales.tail2346aa.ts.net/grafana` | `localhost:3101` |
+| `https://thales.tail2346aa.ts.net/immich` | `localhost:2283` |
+| `https://thales.tail2346aa.ts.net/stock` | `localhost:3002` |
+| `https://thales.tail2346aa.ts.net/lorenzo` | `localhost:3001` |
+| `https://thales.tail2346aa.ts.net/cockpit` | `localhost:9090` |
+| `https://thales.tail2346aa.ts.net/wol` | `localhost:8080` |
+| `https://thales.tail2346aa.ts.net/munin` | `localhost:4949` |
 
 ---
 

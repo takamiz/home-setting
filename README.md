@@ -17,13 +17,17 @@
 
 ## サービス一覧 (thales) - Tailscale 経由でアクセス可能
 
-- 📡 [AdGuard Home](http://adguard.home) - 広告ブロック・DNS設定
-- 🖼️ [Immich](http://immich.home) - フォトサーバー
-- 📊 [Grafana](http://grafana.home) - システム監視
-- 📈 [Stock Market](http://stock.home) - 株価分析
-- 📚 [Lorenzo](http://lorenzo.home) - 蔵書管理
-- 💻 [Cockpit](http://cockpit.home) - サーバー管理
-- ⚡ [WOL (Web UI)](http://wol.home) - legion 起動
+| サービス | LAN + Tailscale (`*.home`) | HTTPS (`thales.tail2346aa.ts.net`) |
+| :--- | :--- | :--- |
+| 📡 AdGuard Home | [adguard.home](http://adguard.home) | [/adguard](https://thales.tail2346aa.ts.net/adguard) |
+| 🖼️ Immich | [immich.home](http://immich.home) | [/immich](https://thales.tail2346aa.ts.net/immich) |
+| 📊 Grafana | [grafana.home](http://grafana.home) | [/grafana](https://thales.tail2346aa.ts.net/grafana) |
+| 📈 Stock Market | [stock.home](http://stock.home) | [/stock](https://thales.tail2346aa.ts.net/stock) |
+| 📚 Lorenzo | [lorenzo.home](http://lorenzo.home) | [/lorenzo](https://thales.tail2346aa.ts.net/lorenzo) |
+| 💻 Cockpit | [cockpit.home](http://cockpit.home) | [/cockpit](https://thales.tail2346aa.ts.net/cockpit) |
+| ⚡ WOL | [wol.home](http://wol.home) | [/wol](https://thales.tail2346aa.ts.net/wol) |
+
+> `*.home`: LAN (DHCP経由) + Tailscale 両対応。`https://thales.tail2346aa.ts.net`: Tailscale Serve 経由 HTTPS。
 
 ---
 
