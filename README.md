@@ -17,18 +17,19 @@
 
 ## サービス一覧 (thales) - Tailscale 経由でアクセス可能
 
-| サービス | LAN + Tailscale (`*.home`) | HTTPS (`thales.tail2346aa.ts.net`) |
-| :--- | :--- | :--- |
-| 📡 AdGuard Home | [adguard.home](http://adguard.home) | [/adguard](https://thales.tail2346aa.ts.net/adguard) |
-| 🖼️ Immich | [immich.home](http://immich.home) | [/immich](https://thales.tail2346aa.ts.net/immich) |
-| 📊 Grafana | [grafana.home](http://grafana.home) | [/grafana](https://thales.tail2346aa.ts.net/grafana) |
-| 📈 Stock Market | [stock.home](http://stock.home) | [/stock](https://thales.tail2346aa.ts.net/stock) |
-| 📚 Lorenzo | [lorenzo.home](http://lorenzo.home) | [/lorenzo](https://thales.tail2346aa.ts.net/lorenzo) |
-| 💻 Cockpit | [cockpit.home](http://cockpit.home) | [/cockpit](https://thales.tail2346aa.ts.net/cockpit) |
-| ⚡ WOL | [wol.home](http://wol.home) | [/wol](https://thales.tail2346aa.ts.net/wol) |
-| 🔧 Router | [router.home](http://router.home) | [/router](https://thales.tail2346aa.ts.net/router) |
+| サービス | LAN (`*.home`) | HTTPS (`*.tk31z.net`) | Tailscale (`thales.tail2346aa.ts.net`) |
+| :--- | :--- | :--- | :--- |
+| 📡 AdGuard Home | [adguard.home](http://adguard.home) | [adguard.tk31z.net](https://adguard.tk31z.net) | [/adguard](https://thales.tail2346aa.ts.net/adguard) |
+| 🖼️ Immich | [immich.home](http://immich.home) | [immich.tk31z.net](https://immich.tk31z.net) | [/immich](https://thales.tail2346aa.ts.net/immich) |
+| 📊 Grafana | [grafana.home](http://grafana.home) | [grafana.tk31z.net](https://grafana.tk31z.net) | [/grafana](https://thales.tail2346aa.ts.net/grafana) |
+| 📈 Stock Market | [stock.home](http://stock.home) | [stock.tk31z.net](https://stock.tk31z.net) | [/stock](https://thales.tail2346aa.ts.net/stock) |
+| 📚 Lorenzo | [lorenzo.home](http://lorenzo.home) | [lorenzo.tk31z.net](https://lorenzo.tk31z.net) | [/lorenzo](https://thales.tail2346aa.ts.net/lorenzo) |
+| 💻 Cockpit | [cockpit.home](http://cockpit.home) | [cockpit.tk31z.net](https://cockpit.tk31z.net) | [/cockpit](https://thales.tail2346aa.ts.net/cockpit) |
+| ⚡ WOL | [wol.home](http://wol.home) | [wol.tk31z.net](https://wol.tk31z.net) | [/wol](https://thales.tail2346aa.ts.net/wol) |
+| 🔧 Router | [router.home](http://router.home) | [router.tk31z.net](https://router.tk31z.net) | [/router](https://thales.tail2346aa.ts.net/router) |
+| 📰 Munin | [munin.home](http://munin.home) | [munin.tk31z.net](https://munin.tk31z.net) | [/munin](https://thales.tail2346aa.ts.net/munin) |
 
-> `*.home`: LAN (DHCP経由) + Tailscale 両対応。`https://thales.tail2346aa.ts.net`: Tailscale Serve 経由 HTTPS。
+> `*.home`: LAN内アクセス。`*.tk31z.net`: Let's Encrypt HTTPS (Tailscale接続時)。`thales.tail2346aa.ts.net`: Tailscale Serve 経由 HTTPS。
 
 ---
 
