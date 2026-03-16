@@ -23,7 +23,8 @@ Tailscale を使って外出先からでも自宅サーバー (`thales`) へセ�
 - `100.100.163.37` (thales の AdGuard Home) を **グローバルDNSサーバー**として登録。
 - Tailscale の **Search Paths** に `home` を登録済み。
 - 外出先でも Tailscale 接続中であればブラウザから `http://[サービス].home` へアクセス可能。
-- AdGuard Home が `*.home` → `100.100.163.37` に解決する。
+- AdGuard Home が `*.home` / `*.tk31z.net` → `192.168.0.200` に解決する。
+- `*.tk31z.net` は HTTPS対応（Let's Encrypt ワイルドカード証明書）。
 
 > **補足**: Split DNS（ドメイン限定転送）ではなく、グローバルDNSサーバーとして設定しているため、すべてのクエリが AdGuard Home を経由する。
 
@@ -101,16 +102,18 @@ sudo systemctl enable tailscaled    # 自動起動有効化
 #### AdGuard Home との連携
 
 - Tailscale グローバルDNSサーバーとして `100.100.163.37:53` (AdGuard Home) が設定されている。
-- AdGuard Home の DNS リライトで `*.home` → `100.100.163.37` (Tailscale IP) に解決。
+- AdGuard Home の DNS リライトで各ドメインを `192.168.0.200` (LAN IP) に解決。
 
 **DNS リライト設定 (AdGuard Home 管理画面 → フィルタ → DNS リライト)**:
 
-| ドメインパターン | 解決先 IP |
-| :--- | :--- |
-| `*.home` | `100.100.163.37` |
-| `thales` | `100.100.163.37` |
+| ドメインパターン | 解決先 IP | 用途 |
+| :--- | :--- | :--- |
+| `*.home` | `192.168.0.200` | LAN内サービスアクセス |
+| `thales` | `192.168.0.200` | thales ホスト名解決 |
+| `router.home` | `192.168.0.1` | ルーター管理画面 |
+| `*.tk31z.net` | `192.168.0.200` | HTTPS対応ドメイン |
 
-> **ポイント**: グローバルDNSとして設定することで、LAN内・Tailscale経由どちらでも同じ `100.100.163.37` に解決される。
+> **ポイント**: `*.tk31z.net` は Apache が `192.168.0.200:443` で HTTPS 終端。Tailscale Serve が `100.100.163.37:443` を使用するため、Apache は LAN IP のみで Listen している。
 
 #### 接続確認コマンド
 
@@ -157,7 +160,24 @@ curl -s -u "${TS_API_KEY}:" \
 ### APIキーの保管場所
 
 - APIキーは Tailscale 管理コンソール (**Settings → Keys**) で発行・管理する。
-- ローカルでは `~/.config/tailscale/api_key` 等に保存し、`chmod 600` で保護することを推奨。
+- ローカルでは `~/.config/tailscale/api_key` に保存し、`chmod 600` で保護する。
+
+```bash
+# ~/.bashrc に追記（ターミナルでの手動操作用）
+export TS_API_KEY="$(cat ~/.config/tailscale/api_key)"
+```
+
+### Claude Code からAPIキーを使う場合
+
+Claude Code が起動する Bash は毎回新規シェルのため、`~/.bashrc` は自動で読み込まれない。
+APIキーを使う Bash コマンドは以下のように明示的にファイルから読み込む：
+
+```bash
+TS_API_KEY=$(cat ~/.config/tailscale/api_key) && curl -s -u "${TS_API_KEY}:" \
+  https://api.tailscale.com/api/v2/tailnet/-/dns/nameservers
+```
+
+または Claude に「`~/.config/tailscale/api_key` のキーを使って」と指示すれば対応できる。
 
 ---
 

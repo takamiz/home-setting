@@ -12,7 +12,7 @@
 
 ## 2. ネットワーク & パッケージリポジトリ
 - **SSH**: 鍵認証 (`~/.ssh/id_ed25519`), `NOPASSWD` 設定済み
-- **DNS (AdGuard Home)**: Snap経由。`*.home` -> `100.100.163.37`
+- **DNS (AdGuard Home)**: Snap経由。`*.home` / `*.tk31z.net` → `192.168.0.200`
 - **リポジトリ (APT Sources)**: 再構築時に以下の追加が必要
   - Docker: `https://download.docker.com/linux/debian trixie`
   - PostgreSQL: `https://apt.postgresql.org/pub/repos/apt trixie-pgdg`
@@ -24,7 +24,7 @@
 
 | サービス名 | ポート (Host) | ローカルURL (HTTP) | 備考 / 認証情報 |
 | :--- | :--- | :--- | :--- |
-| **Apache2** | `80` | - | リバースプロキシ / `*.home` および `thales.tail2346aa.ts.net` の入口 |
+| **Apache2** | `80`, `443` | - | リバースプロキシ / `*.home`, `*.tk31z.net` (HTTPS), `thales.tail2346aa.ts.net` の入口 |
 | **Grafana** | `3101` | `http://grafana.home` | 監視ダッシュボード / Admin: `admin` |
 | **AdGuard Home** | `3000`, `53` | `http://adguard.home` | DNSリライト・広告ブロック (Snap) |
 | **PostgreSQL 17** | `5432` | - | **Native (TimescaleDB 2.25.2)** / User: `postgres`, `takamiz` / Pass: `postgres` |
@@ -62,6 +62,13 @@
 - **Prometheus**: Port 9091 (Native) - Cockpit との競合回避のため
 - **Grafana**: Port 3101 (Apache プロキシ `http://grafana.home`)
 - **設定**: `systemd --user` (`loki.service`, `promtail.service`) および `systemctl` で管理。
+- **Tailscale メトリクス収集**:
+  - `tailscale metrics print` を `/var/lib/prometheus/node-exporter/tailscale.prom` に出力 (15秒ごと)
+  - `systemd` タイマー: `tailscale-metrics.timer` / `tailscale-metrics.service`
+  - スクリプト: `/usr/local/bin/tailscale-metrics-collect.sh`
+  - node_exporter のテキストファイルコレクター経由で Prometheus に取り込み
+  - `/etc/default/prometheus-node-exporter` に `--collector.textfile.directory` 設定済み
+  - Grafana ダッシュボード: `http://grafana.home/d/1fe2dccd-cd7c-4f96-a512-30618fd68e63/tailscale`
 
 ### Stock Market System
 - **構成**: Rust バイナリ (`bin/stock-market`, `bin/server`)
@@ -71,6 +78,41 @@
 ### Immich (Docker)
 - **構成**: `immich_server`, `immich_machine_learning`, `immich_postgres`, `immich_redis`
 - **認証**: User: `postgres` / Pass: `postgres`
+
+### SSL証明書 (Let's Encrypt)
+
+- **ツール**: acme.sh (`~/.acme.sh/`) + Cloudflare DNS-01チャレンジ
+- **ドメイン**: `*.tk31z.net` ワイルドカード証明書
+- **証明書格納先**: `/etc/ssl/tk31z.net/`
+  - `fullchain.pem`, `key.pem`, `cert.pem`
+- **自動更新**: acme.sh の cron により自動更新（Apache も自動リロード）
+- **Cloudflare APIトークン**: `~/.acme.sh/account.conf` に保存済み
+
+```bash
+# 証明書の状態確認
+~/.acme.sh/acme.sh --list
+
+# 手動更新
+CF_Token=$(cat ~/.config/cloudflare/api_token) ~/.acme.sh/acme.sh --renew -d tk31z.net --force
+```
+
+### Apache HTTPS (tk31z.net)
+
+- **設定ファイル**: `/etc/apache2/sites-enabled/tk31z.conf`
+- **Listen**: `192.168.0.200:443`（Tailscale Serve が `100.100.163.37:443` を使用するため LAN IP のみ）
+- **証明書**: `/etc/ssl/tk31z.net/fullchain.pem`
+
+| URL | 転送先 |
+| :--- | :--- |
+| `https://adguard.tk31z.net` | `localhost:3000` |
+| `https://grafana.tk31z.net` | `localhost:3101` |
+| `https://immich.tk31z.net` | `localhost:2283` |
+| `https://stock.tk31z.net` | `localhost:3002` |
+| `https://lorenzo.tk31z.net` | `localhost:3001` |
+| `https://cockpit.tk31z.net` | `localhost:9090` |
+| `https://wol.tk31z.net` | `localhost:8080` |
+| `https://munin.tk31z.net` | `localhost:4949` |
+| `https://router.tk31z.net` | `192.168.0.1` |
 
 ---
 
