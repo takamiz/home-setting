@@ -28,12 +28,21 @@
     - 外出先からでも Tailscale 接続中であれば `http://[サービス].home` でアクセス可能
 - **Wake-on-LAN (WOL)**: `legion` ホストで Magic Packet による起動設定済み。詳細は [legion.md](../hosts/legion.md) を参照。
 - **接続先サーバー (Host: thales)**
-    - **役割**: Railsデプロイ/運用/DNS/メディアサーバー
+    - **役割**: Railsデプロイ/運用/DNS/メディアサーバー (Raspberry Pi)
     - **LAN IP**: `192.168.0.200`
     - **Tailscale IP**: `100.100.163.37`
     - **User**: `takamiz`
     - **認証**: 鍵認証 (パスワードレス)
     - **Sudo**: `NOPASSWD` 設定済み
+    - **稼働中サービス**: AdGuard Home, tailscaled, stock-market/server, PCP (pmlogger), Munin, Samba, postgres (ローカル)
+    - **停止中サービス (メモリ節約のため無効化, 2026-03-17)**:
+        - Immich (server / ML / postgres / redis) — Docker `restart: "no"`
+        - Loki, Grafana, Prometheus, Promtail — systemd disabled
+        - prometheus-node-exporter, prometheus-postgres-exporter — systemd disabled
+        - docker, containerd — systemd disabled (Immich停止中のため)
+        - lightdm, bluetooth, cups, cups-browsed, colord, avahi-daemon, ModemManager, nfs-blkmap — 不要サービス
+    - **監視**: PCP (pmlogger) + Munin で運用。Prometheus/Grafana/Loki は停止中
+    - **注意**: RAM 3.7 GB、スワップ 2 GB だがメモリ逼迫しやすい。Immich のバックグラウンドジョブがトリガーとなりスワップ枯渇→ウォッチドッグタイムアウトでリセットした実績あり (2026-03-17)
 
 ## 4. Git 設定
 - **User Name**: `takamiz`
