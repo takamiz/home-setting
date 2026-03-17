@@ -42,6 +42,16 @@
         - docker, containerd — systemd disabled (Immich停止中のため)
         - lightdm, bluetooth, cups, cups-browsed, colord, avahi-daemon, ModemManager, nfs-blkmap — 不要サービス
     - **監視**: PCP (pmlogger) + Munin で運用。Prometheus/Grafana/Loki は停止中
+    - **Munin カスタムプラグイン** (`/usr/share/munin/plugins/`):
+        - `adguard_dns` — DNS応答時間 (warning: 200ms, critical: 1000ms)
+        - `adguard_http` — 管理画面HTTP死活 (port 3000)
+        - `adguard_dhcp` — DHCPアクティブリース数 (`/var/snap/adguard-home/9005/data/leases.json`, root実行)
+        - `rpi_throttle` — 電圧スロットリング・アンダーボルト検知 (root実行)
+        - `stock_market` — stock-market/server 死活 (port 3002)
+        - `tailscale_peers` — Tailscaleピアオンライン数 (root実行)
+        - `smart_nvme_sdb` — sdb NVMe SMART健全性 (温度・spare・使用率・エラー数, `-d sntrealtek`)
+        - `postgres_size_ALL` / `postgres_connections_*` — PostgreSQL監視 (`libdbd-pg-perl` 必要, postgres実行)
+        - ※ sda (USB HDD) はUSBブリッジがSMARTをブロックするため監視不可
     - **注意**: RAM 3.7 GB、スワップ 2 GB だがメモリ逼迫しやすい。Immich のバックグラウンドジョブがトリガーとなりスワップ枯渇→ウォッチドッグタイムアウトでリセットした実績あり (2026-03-17)
 
 ## 4. Git 設定
