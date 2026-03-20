@@ -28,20 +28,18 @@
     - 外出先からでも Tailscale 接続中であれば `http://[サービス].home` でアクセス可能
 - **Wake-on-LAN (WOL)**: `legion` ホストで Magic Packet による起動設定済み。詳細は [legion.md](../hosts/legion.md) を参照。
 - **接続先サーバー (Host: thales)**
-    - **役割**: Railsデプロイ/運用/DNS/メディアサーバー (Raspberry Pi)
+    - **役割**: DNS/自宅サーバー (Raspberry Pi)
     - **LAN IP**: `192.168.0.200`
     - **Tailscale IP**: `100.100.163.37`
     - **User**: `takamiz`
     - **認証**: 鍵認証 (パスワードレス)
     - **Sudo**: `NOPASSWD` 設定済み
-    - **稼働中サービス**: AdGuard Home, tailscaled, stock-market/server, PCP (pmlogger), Munin, Samba, postgres (ローカル)
-    - **停止中サービス (メモリ節約のため無効化, 2026-03-17)**:
-        - Immich (server / ML / postgres / redis) — Docker `restart: "no"`
-        - Loki, Grafana, Prometheus, Promtail — systemd disabled
-        - prometheus-node-exporter, prometheus-postgres-exporter — systemd disabled
-        - docker, containerd — systemd disabled (Immich停止中のため)
-        - lightdm, bluetooth, cups, cups-browsed, colord, avahi-daemon, ModemManager, nfs-blkmap — 不要サービス
-    - **監視**: PCP (pmlogger) + Munin で運用。Prometheus/Grafana/Loki は停止中
+    - **稼働中サービス**: Apache2, AdGuard Home (Snap), PostgreSQL 17, Stock Market API (systemd --user), WOL Web UI (systemd --user), Cockpit, Munin, Samba, WayVNC, Node Exporter, Postgres Exporter, PCP (pmcd/pmie/pmlogger/pmproxy), Raspberry Pi Connect (systemd --user)
+    - **停止中サービス**: Loki, Prometheus, Promtail — systemd disabled
+    - **削除済みサービス** (2026-03-20):
+        - Grafana — APT パッケージ削除、Apache VirtualHost 削除
+        - Immich — Docker 未インストール、Apache VirtualHost 削除
+    - **監視**: PCP (pmlogger) + Munin + Node Exporter + Postgres Exporter で運用。Prometheus/Loki は停止中
     - **Munin カスタムプラグイン** (`/usr/share/munin/plugins/`):
         - `adguard_dns` — DNS応答時間 (warning: 200ms, critical: 1000ms)
         - `adguard_http` — 管理画面HTTP死活 (port 3000)
@@ -52,7 +50,9 @@
         - `smart_nvme_sdb` — sdb NVMe SMART健全性 (温度・spare・使用率・エラー数, `-d sntrealtek`)
         - `postgres_size_ALL` / `postgres_connections_*` — PostgreSQL監視 (`libdbd-pg-perl` 必要, postgres実行)
         - ※ sda (USB HDD) はUSBブリッジがSMARTをブロックするため監視不可
-    - **注意**: RAM 3.7 GB、スワップ 2 GB だがメモリ逼迫しやすい。Immich のバックグラウンドジョブがトリガーとなりスワップ枯渇→ウォッチドッグタイムアウトでリセットした実績あり (2026-03-17)
+    - **アクセス可能なURL** (LAN `.home` / `*.tk31z.net` / Tailscale 全経路で疎通確認済み):
+        - AdGuard Home, Stock Market, Cockpit, WOL, Munin, Router (192.168.0.1)
+    - **注意**: RAM 3.7 GB、スワップ 2 GB。Immich のバックグラウンドジョブ起因のスワップ枯渇→ウォッチドッグタイムアウトリセット実績あり (2026-03-17) → Immich は削除済み
 
 ## 4. Git 設定
 - **User Name**: `takamiz`
