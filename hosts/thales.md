@@ -17,7 +17,7 @@
   - PostgreSQL: `https://apt.postgresql.org/pub/repos/apt trixie-pgdg`
   - TimescaleDB: `https://packagecloud.io/timescale/timescaledb/debian/ bookworm` (互換利用)
   - Tailscale: `https://pkgs.tailscale.com/stable/debian trixie`
-  - **Grafana**: `https://apt.grafana.com stable main`
+  - ~~**Grafana**: `https://apt.grafana.com stable main`~~ (削除済み)
 
 ## 3. 稼働サービス一覧
 
@@ -39,14 +39,12 @@
 
 | サービス名 | 最終ポート | 状態 | 備考 |
 | :--- | :--- | :--- | :--- |
-| **Grafana** | `3101` | `disabled` | grafana-server.service / APT |
 | **Prometheus** | `9091` | `disabled` | prometheus.service / APT |
 | **Loki** | `3100` | `disabled` | loki.service / systemd --user (Binary) |
 | **Promtail** | `9080` | `disabled` | promtail.service / systemd --user (Binary) |
-| **WOL (Web UI)** | `8080` | `http://wol.home` | Wake-on-LAN (legion 起動用) / systemd --user |
 
 ## 4. メトリクス管理 (Exporters)
-Grafana/Prometheus/Loki スタックは現在停止中。Exporter のみ稼働中。
+Prometheus/Loki スタックは現在停止中。Exporter のみ稼働中。
 
 | 収集対象 | ツール | ポート | 状態 | 備考 |
 | :--- | :--- | :--- | :--- | :--- |
@@ -54,7 +52,6 @@ Grafana/Prometheus/Loki スタックは現在停止中。Exporter のみ稼働�
 | **DB (PostgreSQL)** | Postgres Exporter | 9187 | 稼働中 | Queries, Locks, Connections |
 | **ログ (Logs)** | Loki + Promtail | 3100, 9080 | **停止中** | システム, Apache2, Postgres, Stock |
 | **集約サーバー** | Prometheus | 9091 | **停止中** | 15s スクリーピング間隔 |
-| **ダッシュボード** | Grafana | 3101 | **停止中** | grafana-server.service |
 
 ## 5. 各サービス詳細設定
 
@@ -64,7 +61,6 @@ Grafana/Prometheus/Loki スタックは現在停止中。Exporter のみ稼働�
 - **Loki**: `~/services/loki/loki-linux-arm64` (Port 3100) - **停止中** (loki.service disabled)
 - **Promtail**: `~/services/loki/promtail-linux-arm64` (Port 9080) - **停止中** (promtail.service disabled)
 - **Prometheus**: Port 9091 - **停止中** (prometheus.service disabled)
-- **Grafana**: Port 3101 - **停止中** (grafana-server.service disabled)
 - **Tailscale メトリクス収集** (設定済み・Prometheus 停止中):
   - `tailscale metrics print` を `/var/lib/prometheus/node-exporter/tailscale.prom` に出力 (15秒ごと)
   - `systemd` タイマー: `tailscale-metrics.timer` / `tailscale-metrics.service`
@@ -109,7 +105,6 @@ CF_Token=$(cat ~/.config/cloudflare/api_token) ~/.acme.sh/acme.sh --renew -d tk3
 | URL | 転送先 |
 | :--- | :--- |
 | `https://adguard.tk31z.net` | `localhost:3000` |
-| `https://grafana.tk31z.net` | `localhost:3101` |
 | `https://stock.tk31z.net` | `localhost:3002` |
 | `https://cockpit.tk31z.net` | `localhost:9090` |
 | `https://wol.tk31z.net` | `localhost:8080` |
@@ -136,7 +131,6 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 | パス | 転送先 |
 | :--- | :--- |
 | `https://thales.tail2346aa.ts.net/adguard` | `localhost:3000` |
-| `https://thales.tail2346aa.ts.net/grafana` | `localhost:3101` |
 | `https://thales.tail2346aa.ts.net/stock` | `localhost:3002` |
 | `https://thales.tail2346aa.ts.net/cockpit` | `localhost:9090` |
 | `https://thales.tail2346aa.ts.net/wol` | `localhost:8080` |
@@ -150,4 +144,4 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 - **システム更新**: `sudo apt update && sudo apt upgrade`
 - **PostgreSQL 接続確認**: `psql -h 192.168.0.200 -U postgres` (LAN内から)
 - **Exporter 確認**: `sudo systemctl status prometheus-node-exporter prometheus-postgres-exporter`
-- **監視管理** (停止中): `sudo systemctl status prometheus grafana-server`
+- **監視管理** (停止中): `sudo systemctl status prometheus`
