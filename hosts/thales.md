@@ -43,7 +43,7 @@
 | **Prometheus** | `9091` | `disabled` | prometheus.service / APT |
 | **Loki** | `3100` | `disabled` | loki.service / systemd --user (Binary) |
 | **Promtail** | `9080` | `disabled` | promtail.service / systemd --user (Binary) |
-| **WOL (Web UI)** | `8080` | `failed` | wol.service / systemd --user / gunicorn が起動失敗 |
+| **WOL (Web UI)** | `8080` | `http://wol.home` | Wake-on-LAN (legion 起動用) / systemd --user |
 
 ## 4. メトリクス管理 (Exporters)
 Grafana/Prometheus/Loki スタックは現在停止中。Exporter のみ稼働中。
@@ -77,9 +77,8 @@ Grafana/Prometheus/Loki スタックは現在停止中。Exporter のみ稼働�
 - **Database**: Native PostgreSQL 17 (`stock_market` DB)
 - **実行**: `systemctl --user status stock-server.service`
 
-### WOL (Wake-on-LAN) - **停止中 (FAILED)**
+### WOL (Wake-on-LAN)
 - **構成**: Python Flask + Gunicorn (`~/services/wol/`)
-- **状態**: `wol.service` が `failed` (gunicorn exit-code 3、再起動上限到達)
 - **実行**: `systemctl --user status wol.service`
 - **設定**: `services/wol/systemd/wol.service`
 - **対象**: legion (`98:ee:cb:d9:58:40` / `192.168.0.127`)
