@@ -14,7 +14,6 @@
 - **SSH**: 鍵認証 (`~/.ssh/id_ed25519`), `NOPASSWD` 設定済み
 - **DNS (AdGuard Home)**: Snap経由。`*.home` / `*.tk31z.net` → `192.168.0.200`
 - **リポジトリ (APT Sources)**: 再構築時に以下の追加が必要
-  - Docker: `https://download.docker.com/linux/debian trixie`
   - PostgreSQL: `https://apt.postgresql.org/pub/repos/apt trixie-pgdg`
   - TimescaleDB: `https://packagecloud.io/timescale/timescaledb/debian/ bookworm` (互換利用)
   - Tailscale: `https://pkgs.tailscale.com/stable/debian trixie`
@@ -29,9 +28,7 @@
 | **AdGuard Home** | `3000`, `53` | `http://adguard.home` | DNSリライト・広告ブロック (Snap) |
 | **PostgreSQL 17** | `5432` | - | **Native (TimescaleDB 2.25.2)** / User: `postgres`, `takamiz` / Pass: `postgres` |
 | **Stock Market API** | `3002` | `http://stock.home` | 株式データ同期・分析システム (Rust) |
-| **Lorenzo** | `3001` | `http://lorenzo.home` | 蔵書管理システム (Docker) |
-| **Immich** | `2283` | `http://immich.home` | 自宅フォトサーバー (Docker) |
-| **WOL (Web UI)** | `8080` | `http://wol.home` | Wake-on-LAN (legion 起動用) / Docker |
+| **WOL (Web UI)** | `8080` | `http://wol.home` | Wake-on-LAN (legion 起動用) / systemd --user |
 | **Cockpit** | `9090` | `http://cockpit.home` | サーバー管理 Web UI |
 | **Munin** | `4949` | `http://munin.home` | リソース監視 (Apache Direct Alias) |
 | **WayVNC** | `5900` | - | リモートデスクトップ |
@@ -39,10 +36,6 @@
 | **Loki** | `3100` | - | ログ集約エンジン (Binary) |
 | **Prometheus** | `9091` | - | メトリクス集約サーバー (Port 9091 に変更済) |
 | **Promtail** | `9080` | - | ログ収集エージェント (Binary) |
-
-### 内部専用サービス (Docker Network)
-- **immich_postgres**: PostgreSQL 16 (pgvecto-rs) / Port `5432` (内部のみ) / User: `postgres` / Pass: `postgres`
-- **immich_redis**: Redis (内部)
 
 ## 4. ログ & メトリクス管理 (Grafana Stack)
 各サービスのログとメトリクスは **Grafana** に集約されている。
@@ -75,9 +68,11 @@
 - **Database**: Native PostgreSQL 17 (`stock_market` DB)
 - **実行**: `systemctl --user status stock-server.service`
 
-### Immich (Docker)
-- **構成**: `immich_server`, `immich_machine_learning`, `immich_postgres`, `immich_redis`
-- **認証**: User: `postgres` / Pass: `postgres`
+### WOL (Wake-on-LAN)
+- **構成**: Python Flask + Gunicorn (`~/services/wol/`)
+- **実行**: `systemctl --user status wol.service`
+- **設定**: `services/wol/systemd/wol.service`
+- **対象**: legion (`98:ee:cb:d9:58:40` / `192.168.0.127`)
 
 ### SSL証明書 (Let's Encrypt)
 
@@ -106,9 +101,7 @@ CF_Token=$(cat ~/.config/cloudflare/api_token) ~/.acme.sh/acme.sh --renew -d tk3
 | :--- | :--- |
 | `https://adguard.tk31z.net` | `localhost:3000` |
 | `https://grafana.tk31z.net` | `localhost:3101` |
-| `https://immich.tk31z.net` | `localhost:2283` |
 | `https://stock.tk31z.net` | `localhost:3002` |
-| `https://lorenzo.tk31z.net` | `localhost:3001` |
 | `https://cockpit.tk31z.net` | `localhost:9090` |
 | `https://wol.tk31z.net` | `localhost:8080` |
 | `https://munin.tk31z.net` | `localhost:4949` |
@@ -135,9 +128,7 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 | :--- | :--- |
 | `https://thales.tail2346aa.ts.net/adguard` | `localhost:3000` |
 | `https://thales.tail2346aa.ts.net/grafana` | `localhost:3101` |
-| `https://thales.tail2346aa.ts.net/immich` | `localhost:2283` |
 | `https://thales.tail2346aa.ts.net/stock` | `localhost:3002` |
-| `https://thales.tail2346aa.ts.net/lorenzo` | `localhost:3001` |
 | `https://thales.tail2346aa.ts.net/cockpit` | `localhost:9090` |
 | `https://thales.tail2346aa.ts.net/wol` | `localhost:8080` |
 | `https://thales.tail2346aa.ts.net/munin` | `localhost:4949` |
@@ -149,5 +140,4 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 - **SSHログイン**: `ssh thales`
 - **システム更新**: `sudo apt update && sudo apt upgrade`
 - **PostgreSQL 接続確認**: `psql -h 192.168.0.200 -U postgres` (LAN内から)
-- **Docker管理**: `docker ps`, `docker compose up -d`
 - **監視管理**: `sudo systemctl status prometheus grafana-server`
