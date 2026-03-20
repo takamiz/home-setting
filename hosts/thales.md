@@ -24,52 +24,62 @@
 | サービス名 | ポート (Host) | ローカルURL (HTTP) | 備考 / 認証情報 |
 | :--- | :--- | :--- | :--- |
 | **Apache2** | `80`, `443` | - | リバースプロキシ / `*.home`, `*.tk31z.net` (HTTPS), `thales.tail2346aa.ts.net` の入口 |
-| **Grafana** | `3101` | `http://grafana.home` | 監視ダッシュボード / Admin: `admin` |
 | **AdGuard Home** | `3000`, `53` | `http://adguard.home` | DNSリライト・広告ブロック (Snap) |
 | **PostgreSQL 17** | `5432` | - | **Native (TimescaleDB 2.25.2)** / User: `postgres`, `takamiz` / Pass: `postgres` |
-| **Stock Market API** | `3002` | `http://stock.home` | 株式データ同期・分析システム (Rust) |
-| **WOL (Web UI)** | `8080` | `http://wol.home` | Wake-on-LAN (legion 起動用) / systemd --user |
+| **Stock Market API** | `3002` | `http://stock.home` | 株式データ同期・分析システム (Rust) / systemd --user |
 | **Cockpit** | `9090` | `http://cockpit.home` | サーバー管理 Web UI |
 | **Munin** | `4949` | `http://munin.home` | リソース監視 (Apache Direct Alias) |
-| **WayVNC** | `5900` | - | リモートデスクトップ |
+| **WayVNC** | `5900` | - | リモートデスクトップ / `wayvnc.service` + `rpi-connect-wayvnc.service` |
 | **Samba** | `139`, `445` | - | ファイル共有 (smbd/nmbd) |
-| **Loki** | `3100` | - | ログ集約エンジン (Binary) |
-| **Prometheus** | `9091` | - | メトリクス集約サーバー (Port 9091 に変更済) |
-| **Promtail** | `9080` | - | ログ収集エージェント (Binary) |
+| **Node Exporter** | `9100` | - | システムメトリクス収集 (Prometheus exporter) |
+| **Postgres Exporter** | `9187` | - | PostgreSQL メトリクス収集 (Prometheus exporter) |
+| **Raspberry Pi Connect** | - | - | リモートアクセス (rpi-connect.service / systemd --user) |
 
-## 4. ログ & メトリクス管理 (Grafana Stack)
-各サービスのログとメトリクスは **Grafana** に集約されている。
+### 停止中のサービス
 
-| 収集対象 | ツール | ポート | 備考 |
+| サービス名 | 最終ポート | 状態 | 備考 |
 | :--- | :--- | :--- | :--- |
-| **ログ (Logs)** | Loki + Promtail | 3100, 9080 | システム, Apache2, Postgres, Stock |
-| **システム (Node)** | Node Exporter | 9100 | CPU, RAM, Disk, Network |
-| **DB (PostgreSQL)** | Postgres Exporter | 9187 | Queries, Locks, Connections |
-| **集約サーバー** | Prometheus | 9091 | 15s スクリーピング間隔 |
+| **Grafana** | `3101` | `disabled` | grafana-server.service / APT |
+| **Prometheus** | `9091` | `disabled` | prometheus.service / APT |
+| **Loki** | `3100` | `disabled` | loki.service / systemd --user (Binary) |
+| **Promtail** | `9080` | `disabled` | promtail.service / systemd --user (Binary) |
+| **WOL (Web UI)** | `8080` | `failed` | wol.service / systemd --user / gunicorn が起動失敗 |
+
+## 4. メトリクス管理 (Exporters)
+Grafana/Prometheus/Loki スタックは現在停止中。Exporter のみ稼働中。
+
+| 収集対象 | ツール | ポート | 状態 | 備考 |
+| :--- | :--- | :--- | :--- | :--- |
+| **システム (Node)** | Node Exporter | 9100 | 稼働中 | CPU, RAM, Disk, Network |
+| **DB (PostgreSQL)** | Postgres Exporter | 9187 | 稼働中 | Queries, Locks, Connections |
+| **ログ (Logs)** | Loki + Promtail | 3100, 9080 | **停止中** | システム, Apache2, Postgres, Stock |
+| **集約サーバー** | Prometheus | 9091 | **停止中** | 15s スクリーピング間隔 |
+| **ダッシュボード** | Grafana | 3101 | **停止中** | grafana-server.service |
 
 ## 5. 各サービス詳細設定
 
-### Monitoring (Prometheus + Loki + Grafana)
-- **Loki**: `~/services/loki/loki-linux-arm64` (Port 3100)
-- **Promtail**: `~/services/loki/promtail-linux-arm64` (Port 9080)
-- **Prometheus**: Port 9091 (Native) - Cockpit との競合回避のため
-- **Grafana**: Port 3101 (Apache プロキシ `http://grafana.home`)
-- **設定**: `systemd --user` (`loki.service`, `promtail.service`) および `systemctl` で管理。
-- **Tailscale メトリクス収集**:
+### Monitoring (Exporters のみ稼働中)
+- **Node Exporter**: Port 9100 (`prometheus-node-exporter.service` / APT パッケージ)
+- **Postgres Exporter**: Port 9187 (`prometheus-postgres-exporter.service` / APT パッケージ)
+- **Loki**: `~/services/loki/loki-linux-arm64` (Port 3100) - **停止中** (loki.service disabled)
+- **Promtail**: `~/services/loki/promtail-linux-arm64` (Port 9080) - **停止中** (promtail.service disabled)
+- **Prometheus**: Port 9091 - **停止中** (prometheus.service disabled)
+- **Grafana**: Port 3101 - **停止中** (grafana-server.service disabled)
+- **Tailscale メトリクス収集** (設定済み・Prometheus 停止中):
   - `tailscale metrics print` を `/var/lib/prometheus/node-exporter/tailscale.prom` に出力 (15秒ごと)
   - `systemd` タイマー: `tailscale-metrics.timer` / `tailscale-metrics.service`
   - スクリプト: `/usr/local/bin/tailscale-metrics-collect.sh`
-  - node_exporter のテキストファイルコレクター経由で Prometheus に取り込み
+  - node_exporter のテキストファイルコレクター経由で Prometheus に取り込む設定
   - `/etc/default/prometheus-node-exporter` に `--collector.textfile.directory` 設定済み
-  - Grafana ダッシュボード: `http://grafana.home/d/1fe2dccd-cd7c-4f96-a512-30618fd68e63/tailscale`
 
 ### Stock Market System
 - **構成**: Rust バイナリ (`bin/stock-market`, `bin/server`)
 - **Database**: Native PostgreSQL 17 (`stock_market` DB)
 - **実行**: `systemctl --user status stock-server.service`
 
-### WOL (Wake-on-LAN)
+### WOL (Wake-on-LAN) - **停止中 (FAILED)**
 - **構成**: Python Flask + Gunicorn (`~/services/wol/`)
+- **状態**: `wol.service` が `failed` (gunicorn exit-code 3、再起動上限到達)
 - **実行**: `systemctl --user status wol.service`
 - **設定**: `services/wol/systemd/wol.service`
 - **対象**: legion (`98:ee:cb:d9:58:40` / `192.168.0.127`)
@@ -140,4 +150,5 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 - **SSHログイン**: `ssh thales`
 - **システム更新**: `sudo apt update && sudo apt upgrade`
 - **PostgreSQL 接続確認**: `psql -h 192.168.0.200 -U postgres` (LAN内から)
-- **監視管理**: `sudo systemctl status prometheus grafana-server`
+- **Exporter 確認**: `sudo systemctl status prometheus-node-exporter prometheus-postgres-exporter`
+- **監視管理** (停止中): `sudo systemctl status prometheus grafana-server`
