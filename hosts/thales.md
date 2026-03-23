@@ -27,8 +27,10 @@
 | **AdGuard Home** | `3000`, `53` | `http://adguard.home` | DNSリライト・広告ブロック (Snap) |
 | **PostgreSQL 17** | `5432` | - | **Native (TimescaleDB 2.25.2)** / User: `postgres`, `takamiz` / Pass: `postgres` |
 | **Stock Market API** | `3002` | `http://stock.home` | 株式データ同期・分析システム (Rust) / systemd --user |
+| **Stock Trader API** | `3001` | `http://trader.home` | 株式トレード・ダッシュボード (Rust) / systemd --user |
+| **Stock Swing API** | `3003` | `http://swing.home` | スイングトレード分析システム (Rust) / systemd --user |
 | **Cockpit** | `9090` | `http://cockpit.home` | サーバー管理 Web UI |
-| **Munin** | `4949` | `http://munin.home` | リソース監視 (Apache Direct Alias) |
+| Munin | `80` | `http://munin.home` | リソース監視 (Apache Direct Alias) |
 | **WayVNC** | `5900` | - | リモートデスクトップ / `wayvnc.service` + `rpi-connect-wayvnc.service` |
 | **Samba** | `139`, `445` | - | ファイル共有 (smbd/nmbd) |
 | **Node Exporter** | `9100` | - | システムメトリクス収集 (Prometheus exporter) |
@@ -108,7 +110,7 @@ CF_Token=$(cat ~/.config/cloudflare/api_token) ~/.acme.sh/acme.sh --renew -d tk3
 | `https://stock.tk31z.net` | `localhost:3002` |
 | `https://cockpit.tk31z.net` | `localhost:9090` |
 | `https://wol.tk31z.net` | `localhost:8080` |
-| `https://munin.tk31z.net` | `localhost:4949` |
+| `https://munin.tk31z.net` | `localhost:80` |
 | `https://router.tk31z.net` | `192.168.0.1` |
 
 ---
@@ -134,7 +136,7 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 | `https://thales.tail2346aa.ts.net/stock` | `localhost:3002` |
 | `https://thales.tail2346aa.ts.net/cockpit` | `localhost:9090` |
 | `https://thales.tail2346aa.ts.net/wol` | `localhost:8080` |
-| `https://thales.tail2346aa.ts.net/munin` | `localhost:4949` |
+| `https://thales.tail2346aa.ts.net/munin` | `localhost:80` |
 | `https://thales.tail2346aa.ts.net/router` | `192.168.0.1` (ルーター管理画面) |
 
 ---

@@ -67,13 +67,23 @@
 
 サービスの compose ファイルは `~/services/<name>/docker-compose.yml` に配置。
 
-| サービス名 | ポート | URL | 備考 |
-| :--- | :--- | :--- | :--- |
-| **SonarQube Community** | `9000` | `http://localhost:9000` | コード品質解析 / admin:admin (初回変更必須) |
+| サービス名 | コンテナ名 | ポート | URL | 備考 |
+| :--- | :--- | :--- | :--- | :--- |
+| **TimescaleDB (PG16)** | `stock_db` | `5433` | - | 株式DBほかローカルDB共用 / User: `takamiz` / DB: `stock_market`, `sonarqube`, `grafana` |
+| **pgAdmin4** | `pgadmin_gui` | `8081` | `http://localhost/pgadmin/` | DB管理UI |
+| **SonarQube Community** | `sonarqube` | `9000` | `http://localhost/sonar/` | コード品質解析 / admin:admin (初回変更必須) |
+| **DefectDojo** | `defectdojo-nginx` | `8082` | `http://localhost/defectdojo/` | 脆弱性管理 / admin:admin (初回変更必須) |
+| **Grafana** | `grafana` | `3000` | `http://localhost/grafana/` | メトリクス可視化 / admin:admin (初回変更必須) |
 
-### SonarQube
+> **nginx**: システムのnginx (`/etc/nginx/sites-enabled/dev-tools`) がポート80でリバースプロキシ。
+
+### SonarQube + Grafana
 - **構成**: `~/services/sonarqube/docker-compose.yml`
-- **イメージ**: `sonarqube:community` + `postgres:17` (専用コンテナ)
+- **nginx設定**: `/etc/nginx/sites-available/dev-tools`
+- **DefectDojo**: `~/services/defectdojo/docker-compose.yml` (Django + Celery + Redis)
+- **DB**: `stock_db` (TimescaleDB) を共用
+  - `sonarqube` DB / User: `sonar` / Pass: `sonar`
+  - `grafana` DB / User: `sonar` / Pass: `sonar`
 - **起動**: `cd ~/services/sonarqube && docker compose up -d`
 - **停止**: `docker compose stop` (データ保持) / `docker compose down` (コンテナ削除)
 

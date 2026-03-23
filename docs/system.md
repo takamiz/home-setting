@@ -34,8 +34,11 @@
     - **User**: `takamiz`
     - **認証**: 鍵認証 (パスワードレス)
     - **Sudo**: `NOPASSWD` 設定済み
-    - **稼働中サービス**: Apache2, AdGuard Home (Snap), PostgreSQL 17, Stock Market API (systemd --user), WOL Web UI (systemd --user), Cockpit, Munin, Samba, WayVNC, Node Exporter, Postgres Exporter, PCP (pmcd/pmie/pmlogger/pmproxy), Raspberry Pi Connect (systemd --user)
+    - **稼働中サービス**: Apache2, AdGuard Home (Snap), PostgreSQL 17, Stock Market API (systemd --user), Stock Trader API (systemd --user), Stock Swing API (systemd --user), WOL Web UI (systemd system), Cockpit, Munin, Samba, WayVNC, Node Exporter, Postgres Exporter, PCP (pmcd/pmie/pmlogger/pmproxy), Raspberry Pi Connect (systemd --user)
     - **停止中サービス**: Loki, Prometheus, Promtail — systemd disabled
+    - **無効化済みサービス** (2026-03-20):
+        - `openipmi` — RPi にIPMIハードウェアなし。常時FAILED のため無効化
+        - `nfs-blkmap` / `rpcbind` — NFS未使用のため無効化
     - **削除済みサービス** (2026-03-20):
         - Grafana — APT パッケージ削除、Apache VirtualHost 削除
         - Immich — Docker 未インストール、Apache VirtualHost 削除
@@ -49,9 +52,12 @@
         - `tailscale_peers` — Tailscaleピアオンライン数 (root実行)
         - `smart_nvme_sdb` — sdb NVMe SMART健全性 (温度・spare・使用率・エラー数, `-d sntrealtek`)
         - `postgres_size_ALL` / `postgres_connections_*` — PostgreSQL監視 (`libdbd-pg-perl` 必要, postgres実行)
+        - `munin_switchbot` — SwitchBot Hub2 温湿度・照度・バッテリー監視 (multigraph: 温湿度は部屋別、照度は `switchbot_light` に統合、バッテリーは `switchbot_battery` に統合)
         - ※ sda (USB HDD) はUSBブリッジがSMARTをブロックするため監視不可
     - **アクセス可能なURL** (LAN `.home` / `*.tk31z.net` / Tailscale 全経路で疎通確認済み):
-        - AdGuard Home, Stock Market, Cockpit, WOL, Munin, Router (192.168.0.1)
+        - AdGuard Home, Stock Market, Stock Trader (trader.home), Stock Swing (swing.home), Cockpit, WOL, Munin, Router (192.168.0.1)
+    - **WOL Web UI**: `/home/takamiz/services/wol` — gunicorn (port 8080)。以前はユーザーサービスだったが、ブート時起動失敗のためシステムサービス (`/etc/systemd/system/wol.service`, `User=takamiz`, `network-online.target` 依存) に移行 (2026-03-20)
+    - **Munin テーマ**: Munstrap-Dark (Bootstrap 3ベース) — `/etc/munin/templates/` と `/var/cache/munin/www/static/` に導入
     - **注意**: RAM 3.7 GB、スワップ 2 GB。Immich のバックグラウンドジョブ起因のスワップ枯渇→ウォッチドッグタイムアウトリセット実績あり (2026-03-17) → Immich は削除済み
 
 ## 4. Git 設定

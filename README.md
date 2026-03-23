@@ -21,10 +21,9 @@
 | サービス | LAN (`*.home`) | HTTPS (`*.tk31z.net`) | Tailscale (`thales.tail2346aa.ts.net`) |
 | :--- | :--- | :--- | :--- |
 | 📡 AdGuard Home | [adguard.home](http://adguard.home) | [adguard.tk31z.net](https://adguard.tk31z.net) | [/adguard](https://thales.tail2346aa.ts.net/adguard) |
-| 🖼️ Immich | [immich.home](http://immich.home) | [immich.tk31z.net](https://immich.tk31z.net) | [/immich](https://thales.tail2346aa.ts.net/immich) |
-| 📊 Grafana | [grafana.home](http://grafana.home) | [grafana.tk31z.net](https://grafana.tk31z.net) | [/grafana](https://thales.tail2346aa.ts.net/grafana) |
 | 📈 Stock Market | [stock.home](http://stock.home) | [stock.tk31z.net](https://stock.tk31z.net) | [/stock](https://thales.tail2346aa.ts.net/stock) |
-| 📚 Lorenzo | [lorenzo.home](http://lorenzo.home) | [lorenzo.tk31z.net](https://lorenzo.tk31z.net) | [/lorenzo](https://thales.tail2346aa.ts.net/lorenzo) |
+| 💹 Stock Trader | [trader.home](http://trader.home) | - | - |
+| 📉 Stock Swing | [swing.home](http://swing.home) | - | - |
 | 💻 Cockpit | [cockpit.home](http://cockpit.home) | [cockpit.tk31z.net](https://cockpit.tk31z.net) | [/cockpit](https://thales.tail2346aa.ts.net/cockpit) |
 | ⚡ WOL | [wol.home](http://wol.home) | [wol.tk31z.net](https://wol.tk31z.net) | [/wol](https://thales.tail2346aa.ts.net/wol) |
 | 🔧 Router | [router.home](http://router.home) | [router.tk31z.net](https://router.tk31z.net) | [/router](https://thales.tail2346aa.ts.net/router) |
