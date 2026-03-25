@@ -108,6 +108,8 @@ CF_Token=$(cat ~/.config/cloudflare/api_token) ~/.acme.sh/acme.sh --renew -d tk3
 | :--- | :--- |
 | `https://adguard.tk31z.net` | `localhost:3000` |
 | `https://stock.tk31z.net` | `localhost:3002` |
+| `https://trader.tk31z.net` | `localhost:3001` |
+| `https://swing.tk31z.net` | `localhost:3003` |
 | `https://cockpit.tk31z.net` | `localhost:9090` |
 | `https://wol.tk31z.net` | `localhost:8080` |
 | `https://munin.tk31z.net` | `localhost:80` |
@@ -134,6 +136,8 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 | :--- | :--- |
 | `https://thales.tail2346aa.ts.net/adguard` | `localhost:3000` |
 | `https://thales.tail2346aa.ts.net/stock` | `localhost:3002` |
+| `https://thales.tail2346aa.ts.net/trader` | `localhost:3001` |
+| `https://thales.tail2346aa.ts.net/swing` | `localhost:3003` |
 | `https://thales.tail2346aa.ts.net/cockpit` | `localhost:9090` |
 | `https://thales.tail2346aa.ts.net/wol` | `localhost:8080` |
 | `https://thales.tail2346aa.ts.net/munin` | `localhost:80` |
