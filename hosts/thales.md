@@ -17,7 +17,7 @@
   - PostgreSQL: `https://apt.postgresql.org/pub/repos/apt trixie-pgdg`
   - TimescaleDB: `https://packagecloud.io/timescale/timescaledb/debian/ bookworm` (互換利用)
   - Tailscale: `https://pkgs.tailscale.com/stable/debian trixie`
-  - **Grafana**: `https://apt.grafana.com stable main` (インストール済み・非アクティブ)
+  - ~~**Grafana**: `https://apt.grafana.com stable main`~~ (削除済み)
 
 ## 3. 稼働サービス一覧
 
@@ -41,7 +41,6 @@
 
 | サービス名 | 最終ポート | 状態 | 備考 |
 | :--- | :--- | :--- | :--- |
-| **Grafana** | `3000` | `disabled` | grafana-server.service / APT (インストール済みだが未使用) |
 | **Prometheus** | `9091` | `disabled` | prometheus.service / APT |
 | **Loki** | `3100` | `disabled` | loki.service / systemd --user (Binary) |
 | **Promtail** | `9080` | `disabled` | promtail.service / systemd --user (Binary) |
