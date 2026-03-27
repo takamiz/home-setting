@@ -17,7 +17,7 @@
   - PostgreSQL: `https://apt.postgresql.org/pub/repos/apt trixie-pgdg`
   - TimescaleDB: `https://packagecloud.io/timescale/timescaledb/debian/ bookworm` (互換利用)
   - Tailscale: `https://pkgs.tailscale.com/stable/debian trixie`
-  - ~~**Grafana**: `https://apt.grafana.com stable main`~~ (削除済み)
+  - **Grafana**: `https://apt.grafana.com stable main` (インストール済み・非アクティブ)
 
 ## 3. 稼働サービス一覧
 
@@ -25,10 +25,10 @@
 | :--- | :--- | :--- | :--- |
 | **Apache2** | `80`, `443` | - | リバースプロキシ / `*.home`, `*.tk31z.net` (HTTPS), `thales.tail2346aa.ts.net` の入口 |
 | **AdGuard Home** | `3000`, `53` | `http://adguard.home` | DNSリライト・広告ブロック (Snap) |
-| **PostgreSQL 17** | `5432` | - | **Native (TimescaleDB 2.25.2)** / User: `postgres`, `takamiz` / Pass: `postgres` |
-| **Stock Market API** | `3002` | `http://stock.home` | 株式データ同期・分析システム (Rust) / systemd --user |
-| **Stock Trader API** | `3001` | `http://trader.home` | 株式トレード・ダッシュボード (Rust) / systemd --user |
-| **Stock Swing API** | `3003` | `http://swing.home` | スイングトレード分析システム (Rust) / systemd --user |
+| **PostgreSQL 17** | `5432` | - | **Native (TimescaleDB 2.26.0)** / User: `postgres`, `takamiz` / Pass: `postgres` |
+| **Stock Market API** | `3002` | `http://stock.home` | 株式データ同期・分析システム (Rust) / `stock-server.service` (systemd --user) |
+| **Stock Trader API** | `3001` | `http://trader.home` | 株式トレード・ダッシュボード (Rust) / `stock-trader-server.service` (systemd --user) |
+| **Stock Swing API** | `3003` | `http://swing.home` | スイングトレード分析システム (Rust) / `stock-swing-server.service` (systemd --user) |
 | **Cockpit** | `9090` | `http://cockpit.home` | サーバー管理 Web UI |
 | Munin | `80` | `http://munin.home` | リソース監視 (Apache Direct Alias) |
 | **WayVNC** | `5900` | - | リモートデスクトップ / `wayvnc.service` + `rpi-connect-wayvnc.service` |
@@ -41,6 +41,7 @@
 
 | サービス名 | 最終ポート | 状態 | 備考 |
 | :--- | :--- | :--- | :--- |
+| **Grafana** | `3000` | `disabled` | grafana-server.service / APT (インストール済みだが未使用) |
 | **Prometheus** | `9091` | `disabled` | prometheus.service / APT |
 | **Loki** | `3100` | `disabled` | loki.service / systemd --user (Binary) |
 | **Promtail** | `9080` | `disabled` | promtail.service / systemd --user (Binary) |
