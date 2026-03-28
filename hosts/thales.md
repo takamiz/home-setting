@@ -77,9 +77,10 @@ Prometheus/Loki スタックは現在停止中。Exporter のみ稼働中。
 
 ### WOL (Wake-on-LAN)
 - **構成**: Python Flask + Gunicorn (`~/services/wol/`)
-- **実行**: `systemctl --user status wol.service`
-- **設定**: `services/wol/systemd/wol.service`
+- **実行**: `systemctl status wol.service` (システムサービス)
+- **設定**: `/etc/systemd/system/wol.service` (`User=takamiz`, `network-online.target` 依存)
 - **対象**: legion (`98:ee:cb:d9:58:40` / `192.168.0.127`)
+- **注意**: 旧ユーザーサービス (`~/.config/systemd/user/wol.service`) は 2026-03-28 に削除済み
 
 ### SSL証明書 (Let's Encrypt)
 
@@ -148,6 +149,7 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 ## 管理・メンテナンス
 - **SSHログイン**: `ssh thales`
 - **システム更新**: `sudo apt update && sudo apt upgrade`
+- **ヘルスチェック**: `check-services` — 全サービスの死活を一覧表示 (`/usr/local/bin/check-services`)
 - **PostgreSQL 接続確認**: `psql -h 192.168.0.200 -U postgres` (LAN内から)
 - **Exporter 確認**: `sudo systemctl status prometheus-node-exporter prometheus-postgres-exporter`
 - **監視管理** (停止中): `sudo systemctl status prometheus`

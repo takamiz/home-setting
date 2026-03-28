@@ -36,9 +36,9 @@
     - **Sudo**: `NOPASSWD` 設定済み
     - **稼働中サービス**: Apache2, AdGuard Home (Snap), PostgreSQL 17, Stock Market API (systemd --user), Stock Trader API (systemd --user), Stock Swing API (systemd --user), WOL Web UI (systemd system), Cockpit, Munin, Samba, WayVNC, Node Exporter, Postgres Exporter, PCP (pmcd/pmie/pmlogger/pmproxy), Raspberry Pi Connect (systemd --user)
     - **停止中サービス**: Loki, Prometheus, Promtail — systemd disabled
-    - **無効化済みサービス** (2026-03-20):
-        - `openipmi` — RPi にIPMIハードウェアなし。常時FAILED のため無効化
-        - `nfs-blkmap` / `rpcbind` — NFS未使用のため無効化
+    - **無効化済みサービス**:
+        - `openipmi` — RPi にIPMIハードウェアなし。`mask` 済み (2026-03-28)
+        - `nfs-blkmap` / `rpcbind` — NFS未使用のため無効化 (2026-03-20)
     - **削除済みサービス** (2026-03-20):
         - Grafana — APT パッケージ削除、Apache VirtualHost 削除
         - Immich — Docker 未インストール、Apache VirtualHost 削除
@@ -53,6 +53,7 @@
         - `smart_nvme_sdb` — sdb NVMe SMART健全性 (温度・spare・使用率・エラー数, `-d sntrealtek`)
         - `postgres_size_ALL` / `postgres_connections_*` — PostgreSQL監視 (`libdbd-pg-perl` 必要, postgres実行)
         - `munin_switchbot` — SwitchBot Hub2 温湿度・照度・バッテリー監視 (multigraph: 温湿度は部屋別、照度は `switchbot_light` に統合、バッテリーは `switchbot_battery` に統合)
+        - `service_health` — 全サービス死活監視 multigraph (root実行): system/user サービス (systemctl) + HTTP/TCP エンドポイント (2026-03-28)
         - ※ sda (USB HDD) はUSBブリッジがSMARTをブロックするため監視不可
     - **アクセス可能なURL** (LAN `.home` / `*.tk31z.net` / Tailscale 全経路で疎通確認済み):
         - AdGuard Home, Stock Market, Stock Trader (trader.home), Stock Swing (swing.home), Cockpit, WOL, Munin, Router (192.168.0.1)
