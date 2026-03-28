@@ -88,7 +88,9 @@ Prometheus/Loki スタックは現在停止中。Exporter のみ稼働中。
 - **ドメイン**: `*.tk31z.net` ワイルドカード証明書
 - **証明書格納先**: `/etc/ssl/tk31z.net/`
   - `fullchain.pem`, `key.pem`, `cert.pem`
-- **自動更新**: acme.sh の cron により自動更新（Apache も自動リロード）
+- **自動更新**: systemd タイマー (`acme-renew.timer` / systemd --user) により毎日更新（Apache も自動リロード）
+  - `~/.config/systemd/user/acme-renew.service` + `acme-renew.timer`
+  - `Persistent=true` 設定済み（停止中の発火分は次回起動時に実行）
 - **Cloudflare APIトークン**: `~/.acme.sh/account.conf` に保存済み
 
 ```bash
