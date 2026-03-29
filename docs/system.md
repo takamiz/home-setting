@@ -54,7 +54,11 @@
         - `postgres_size_ALL` / `postgres_connections_*` — PostgreSQL監視 (`libdbd-pg-perl` 必要, postgres実行)
         - `munin_switchbot` — SwitchBot Hub2 温湿度・照度・バッテリー監視 (multigraph: 温湿度は部屋別、照度は `switchbot_light` に統合、バッテリーは `switchbot_battery` に統合)
         - `service_health` — 全サービス死活監視 multigraph (root実行): system/user サービス (systemctl) + HTTP/TCP エンドポイント (2026-03-28)
+        - `multiping` — ルーター(192.168.0.1)・8.8.8.8・1.1.1.1 への RTT・パケットロス監視 (2026-03-29)
+        - `apache_accesses` / `apache_processes` / `apache_volume` — Apache アクセス数・プロセス数・転送量 (`libwww-perl` 必要, 2026-03-29)
+        - `diskstats` — sda/sdb のみに絞り込み (`env.include_only sda,sdb`、loop デバイス除外, 2026-03-29)
         - ※ sda (USB HDD) はUSBブリッジがSMARTをブロックするため監視不可
+        - ※ 設定ファイル: `/etc/munin/plugin-conf.d/local-additions` (diskstats/multiping/apache_* の追加設定)
     - **アクセス可能なURL** (LAN `.home` / `*.tk31z.net` / Tailscale 全経路で疎通確認済み):
         - AdGuard Home, Stock Market, Stock Trader (trader.home), Stock Swing (swing.home), Cockpit, WOL, Munin, Router (192.168.0.1)
     - **WOL Web UI**: `/home/takamiz/services/wol` — gunicorn (port 8080)。以前はユーザーサービスだったが、ブート時起動失敗のためシステムサービス (`/etc/systemd/system/wol.service`, `User=takamiz`, `network-online.target` 依存) に移行 (2026-03-20)
