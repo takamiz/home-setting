@@ -27,6 +27,12 @@
 - **戦略**: SL -5% / TP +10% + トレーリングストップ 5%。OOS実績 +6.21% / 15ヶ月、Sharpe 0.93。
 - **技術**: Rust / sqlx / axum / Leptos (WASM)
 
+#### stock-db（kabu STATION 連携・DB記録）
+- **概要**: kabu STATION REST API に接続し、板情報・注文・資産・ランキングをリアルタイムで PostgreSQL に記録。シグナル評価・ペーパートレード機能を持つデーモン。WASM フロントエンド付き。
+- **パス**: `/home/takamiz/stock-db`
+- **技術**: Rust / sqlx / axum / Leptos (WASM) / OpenTelemetry (Jaeger)
+- **デプロイ**: thales (`stock-db-daemon.service`, port 3000)
+
 #### stock-Spatiotemporal（次世代研究・実験的）
 - **概要**: 衛星画像・気象データ等オルタナティブデータ + カオス理論（リャプノフ指数・ハースト指数）+ Bayesian Transformer によるレジーム検知。「Brain（LLM）と Hands（Rust実行）の分離」が設計思想。
 - **パス**: `/home/takamiz/repo/stock-Spatiotemporal`

@@ -24,11 +24,13 @@
 | サービス名 | ポート (Host) | ローカルURL (HTTP) | 備考 / 認証情報 |
 | :--- | :--- | :--- | :--- |
 | **Apache2** | `80`, `443` | - | リバースプロキシ / `*.home`, `*.tk31z.net` (HTTPS), `thales.tail2346aa.ts.net` の入口 |
-| **AdGuard Home** | `3000`, `53` | `http://adguard.home` | DNSリライト・広告ブロック (Snap) |
+| **AdGuard Home** | `3004`, `53` | `http://adguard.home` | DNSリライト・広告ブロック (Snap) / ※旧port 3000 → 3004 変更済み (stock-db 衝突回避, 2026-04-05) |
+| **stock-db** | `3000` | `http://stock-db.home` | kabu STATION 連携・DB記録・シグナル評価 (Rust) / `stock-db-daemon.service` (systemd --user) |
 | **PostgreSQL 17** | `5432` | - | **Native (TimescaleDB 2.26.0)** / User: `postgres`, `takamiz` / Pass: `postgres` |
 | **Stock Market API** | `3002` | `http://stock.home` | 株式データ同期・分析システム (Rust) / `stock-server.service` (systemd --user) |
 | **Stock Trader API** | `3001` | `http://trader.home` | 株式トレード・ダッシュボード (Rust) / `stock-trader-server.service` (systemd --user) |
 | **Stock Swing API** | `3003` | `http://swing.home` | スイングトレード分析システム (Rust) / `stock-swing-server.service` (systemd --user) |
+| **Jaeger** | `16686` | `http://jaeger.home` | 分散トレーシング UI (v2.17.0) / `jaeger.service` (systemd --user) |
 | **Cockpit** | `9090` | `http://cockpit.home` | サーバー管理 Web UI |
 | Munin | `80` | `http://munin.home` | リソース監視 (Apache Direct Alias) |
 | **WayVNC** | `5900` | - | リモートデスクトップ / `wayvnc.service` + `rpi-connect-wayvnc.service` |
@@ -70,6 +72,39 @@ Prometheus/Loki スタックは現在停止中。Exporter のみ稼働中。
   - node_exporter のテキストファイルコレクター経由で Prometheus に取り込む設定
   - `/etc/default/prometheus-node-exporter` に `--collector.textfile.directory` 設定済み
 
+### stock-db (kabu STATION 連携デーモン)
+
+- **バイナリ**: `~/stock-db/bin/stock-db`
+- **設定**: `~/stock-db/.env`
+- **実行**: `systemctl --user status stock-db-daemon.service`
+- **DB**: `stock-db` (PostgreSQL / `postgres://takamiz:stock_pass@127.0.0.1:5432/stock-db`)
+- **kabu STATION**: `http://192.168.0.199:8088` (PROD) / `http://192.168.0.199:8089` (TEST)
+- **ポート**: `3000` (Web API + WASM フロントエンド)
+- **OpenTelemetry**: Jaeger (localhost:4317) にトレース送信
+- **ループ処理**:
+  - WebSocket: 400ms PUSH → `kabu_board_ticks`
+  - Positions: 5分ごと → `kabu_positions`
+  - Orders: 1分ごと → `kabu_orders`
+  - Wallet: 5分ごと → `kabu_wallet`
+  - Ranking: 3分ごと → シンボル登録
+  - Signal: 3分ごと → エントリーシグナル評価
+  - Exit: 30秒ごと → エグジット条件チェック
+- **注意**: kabu STATION が未起動・未ログイン時は 401 エラーで再起動ループ (想定内)
+
+### Jaeger (分散トレーシング)
+
+- **バージョン**: v2.17.0
+- **バイナリ**: `~/services/jaeger/jaeger`
+- **設定ファイル**: `~/services/jaeger/config.yaml`
+- **ストレージ**: インメモリ (max_traces: 100,000)
+- **実行**: `systemctl --user status jaeger.service`
+- **ポート**:
+  - UI: `16686`
+  - OTLP gRPC: `4317`
+  - OTLP HTTP: `4318`
+  - Jaeger Thrift HTTP: `14268`
+  - Jaeger Protobuf gRPC: `14250`
+
 ### Stock Market System
 - **構成**: Rust バイナリ (`bin/stock-market`, `bin/server`)
 - **Database**: Native PostgreSQL 17 (`stock_market` DB)
@@ -109,13 +144,15 @@ CF_Token=$(cat ~/.config/cloudflare/api_token) ~/.acme.sh/acme.sh --renew -d tk3
 
 | URL | 転送先 |
 | :--- | :--- |
-| `https://adguard.tk31z.net` | `localhost:3000` |
+| `https://adguard.tk31z.net` | `localhost:3004` |
+| `https://stock-db.tk31z.net` | `localhost:3000` |
 | `https://stock.tk31z.net` | `localhost:3002` |
 | `https://trader.tk31z.net` | `localhost:3001` |
 | `https://swing.tk31z.net` | `localhost:3003` |
 | `https://cockpit.tk31z.net` | `localhost:9090` |
 | `https://wol.tk31z.net` | `localhost:8080` |
-| `https://munin.tk31z.net` | `localhost:80` |
+| `https://munin.tk31z.net` | 静的ファイル直接配信 (`/var/cache/munin/www`) |
+| `https://jaeger.tk31z.net` | `localhost:16686` |
 | `https://router.tk31z.net` | `192.168.0.1` |
 
 ---
@@ -137,13 +174,15 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 
 | パス | 転送先 |
 | :--- | :--- |
-| `https://thales.tail2346aa.ts.net/adguard` | `localhost:3000` |
+| `https://thales.tail2346aa.ts.net/adguard` | `localhost:3004` |
+| `https://thales.tail2346aa.ts.net/stock-db` | `localhost:3000` |
 | `https://thales.tail2346aa.ts.net/stock` | `localhost:3002` |
 | `https://thales.tail2346aa.ts.net/trader` | `localhost:3001` |
 | `https://thales.tail2346aa.ts.net/swing` | `localhost:3003` |
 | `https://thales.tail2346aa.ts.net/cockpit` | `localhost:9090` |
 | `https://thales.tail2346aa.ts.net/wol` | `localhost:8080` |
 | `https://thales.tail2346aa.ts.net/munin` | `localhost:80` |
+| `https://thales.tail2346aa.ts.net/jaeger` | `localhost:16686` |
 | `https://thales.tail2346aa.ts.net/router` | `192.168.0.1` (ルーター管理画面) |
 
 ---

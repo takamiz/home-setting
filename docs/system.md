@@ -34,7 +34,7 @@
     - **User**: `takamiz`
     - **認証**: 鍵認証 (パスワードレス)
     - **Sudo**: `NOPASSWD` 設定済み
-    - **稼働中サービス**: Apache2, AdGuard Home (Snap), PostgreSQL 17, Stock Market API (systemd --user), Stock Trader API (systemd --user), Stock Swing API (systemd --user), WOL Web UI (systemd system), Cockpit, Munin, Samba, WayVNC, Node Exporter, Postgres Exporter, PCP (pmcd/pmie/pmlogger/pmproxy), Raspberry Pi Connect (systemd --user)
+    - **稼働中サービス**: Apache2, AdGuard Home (Snap, port 3004), PostgreSQL 17, Stock Market API (systemd --user), Stock Trader API (systemd --user), Stock Swing API (systemd --user), stock-db (systemd --user, port 3000), WOL Web UI (systemd system), Cockpit, Munin, Samba, WayVNC, Node Exporter, Postgres Exporter, Jaeger (systemd --user), PCP (pmcd/pmie/pmlogger/pmproxy), Raspberry Pi Connect (systemd --user)
     - **停止中サービス**: Loki, Prometheus, Promtail — systemd disabled
     - **無効化済みサービス**:
         - `openipmi` — RPi にIPMIハードウェアなし。`mask` 済み (2026-03-28)
@@ -45,7 +45,7 @@
     - **監視**: PCP (pmlogger) + Munin + Node Exporter + Postgres Exporter で運用。Prometheus/Loki は停止中
     - **Munin カスタムプラグイン** (`/usr/share/munin/plugins/`):
         - `adguard_dns` — DNS応答時間 (warning: 200ms, critical: 1000ms)
-        - `adguard_http` — 管理画面HTTP死活 (port 3000)
+        - `adguard_http` — 管理画面HTTP死活 (port 3004)
         - `adguard_dhcp` — DHCPアクティブリース数 (`/var/snap/adguard-home/9005/data/leases.json`, root実行)
         - `rpi_throttle` — 電圧スロットリング・アンダーボルト検知 (root実行)
         - `stock_market` — stock-market/server 死活 (port 3002)
@@ -60,10 +60,20 @@
         - ※ sda (USB HDD) はUSBブリッジがSMARTをブロックするため監視不可
         - ※ 設定ファイル: `/etc/munin/plugin-conf.d/local-additions` (diskstats/multiping/apache_* の追加設定)
     - **アクセス可能なURL** (LAN `.home` / `*.tk31z.net` / Tailscale 全経路で疎通確認済み):
-        - AdGuard Home, Stock Market, Stock Trader (trader.home), Stock Swing (swing.home), Cockpit, WOL, Munin, Router (192.168.0.1)
+        - AdGuard Home, Stock Market, Stock Trader (trader.home), Stock Swing (swing.home), stock-db (stock-db.home), Cockpit, WOL, Munin, Jaeger (jaeger.home), Router (192.168.0.1)
     - **WOL Web UI**: `/home/takamiz/services/wol` — gunicorn (port 8080)。以前はユーザーサービスだったが、ブート時起動失敗のためシステムサービス (`/etc/systemd/system/wol.service`, `User=takamiz`, `network-online.target` 依存) に移行 (2026-03-20)
     - **Munin テーマ**: Munstrap-Dark (Bootstrap 3ベース) — `/etc/munin/templates/` と `/var/cache/munin/www/static/` に導入
     - **注意**: RAM 3.7 GB、スワップ 2 GB。Immich のバックグラウンドジョブ起因のスワップ枯渇→ウォッチドッグタイムアウトリセット実績あり (2026-03-17) → Immich は削除済み
+
+- **接続先 Windows PC (Host: kabu)**
+    - **役割**: kabu STATION (auカブコム証券) 常駐マシン
+    - **ホスト名**: `kabu.lan`
+    - **LAN IP**: `192.168.0.199`
+    - **OS**: Windows
+    - **稼働中サービス**: OpenSSH (22), RPC (135), NetBIOS (139), RDP (3389), nginx/1.26.3 → kabu STATION REST API (8088/8089)
+    - **kabu STATION API**: `http://192.168.0.199:8088` (stock-swing, stock-db が接続)
+    - **Tailscale**: 未導入 (LAN内からのみアクセス可)
+    - **詳細**: [hosts/kabu.md](../hosts/kabu.md)
 
 ## 4. Git 設定
 - **User Name**: `takamiz`
