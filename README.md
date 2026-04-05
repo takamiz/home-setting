@@ -24,10 +24,12 @@
 | 📈 Stock Market | [stock.home](http://stock.home) | [stock.tk31z.net](https://stock.tk31z.net) | [/stock](https://thales.tail2346aa.ts.net/stock) |
 | 💹 Stock Trader | [trader.home](http://trader.home) | [trader.tk31z.net](https://trader.tk31z.net) | [/trader](https://thales.tail2346aa.ts.net/trader) |
 | 📉 Stock Swing | [swing.home](http://swing.home) | [swing.tk31z.net](https://swing.tk31z.net) | [/swing](https://thales.tail2346aa.ts.net/swing) |
+| 🗄️ Stock DB | [stock-db.home](http://stock-db.home) | [stock-db.tk31z.net](https://stock-db.tk31z.net) | [/stock-db](https://thales.tail2346aa.ts.net/stock-db) |
 | 💻 Cockpit | [cockpit.home](http://cockpit.home) | [cockpit.tk31z.net](https://cockpit.tk31z.net) | [/cockpit](https://thales.tail2346aa.ts.net/cockpit) |
 | ⚡ WOL | [wol.home](http://wol.home) | [wol.tk31z.net](https://wol.tk31z.net) | [/wol](https://thales.tail2346aa.ts.net/wol) |
 | 🔧 Router | [router.home](http://router.home) | [router.tk31z.net](https://router.tk31z.net) | [/router](https://thales.tail2346aa.ts.net/router) |
 | 📰 Munin | [munin.home](http://munin.home) | [munin.tk31z.net](https://munin.tk31z.net) | [/munin](https://thales.tail2346aa.ts.net/munin) |
+| 🔍 Jaeger | [jaeger.home](http://jaeger.home) | [jaeger.tk31z.net](https://jaeger.tk31z.net) | [/jaeger](https://thales.tail2346aa.ts.net/jaeger) |
 
 > `*.home`: LAN内アクセス。`*.tk31z.net`: Let's Encrypt HTTPS (Tailscale接続時)。`thales.tail2346aa.ts.net`: Tailscale Serve 経由 HTTPS。
 
