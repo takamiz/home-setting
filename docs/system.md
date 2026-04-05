@@ -75,7 +75,20 @@
     - **Tailscale**: 未導入 (LAN内からのみアクセス可)
     - **詳細**: [hosts/kabu.md](../hosts/kabu.md)
 
-## 4. Git 設定
+## 4. Docker サービス (legion)
+
+legion 上で Docker Compose により以下のサービスが稼働。
+
+| サービス | ポート | 設定ファイル | 備考 |
+|---------|--------|------------|------|
+| **GitLab CE** | `8929` (HTTP), `2222` (SSH) | `~/services/gitlab/docker-compose.yml` | 日本語化済み (`default_locale=ja`)、JST (`time_zone=Asia/Tokyo`) |
+| **SonarQube** | `9000` | `~/services/sonarqube/docker-compose.yml` | 日本語パック (l10nja 25.5) インストール済み、JST (`TZ=Asia/Tokyo`) |
+
+- **GitLab**: `http://localhost:8929/` — CI/CD, コードレビュー
+- **SonarQube**: `http://localhost:9000/sonar/` — コード品質解析 (PostgreSQL on port 5433)
+- SonarQube は thales の PostgreSQL (`sonarqube` DB, port 5433) を使用
+
+## 5. Git 設定
 - **User Name**: `takamiz`
 - **User Email**: `takamiz@gmail.com`
 - **core.editor**: `vim`
