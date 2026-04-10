@@ -21,10 +21,7 @@
 | サービス | LAN (`*.home`) | HTTPS (`*.tk31z.net`) | Tailscale (`thales.tail2346aa.ts.net`) |
 | :--- | :--- | :--- | :--- |
 | 📡 AdGuard Home | [adguard.home](http://adguard.home) | [adguard.tk31z.net](https://adguard.tk31z.net) | [/adguard](https://thales.tail2346aa.ts.net/adguard) |
-| 📈 Stock Market | [stock.home](http://stock.home) | [stock.tk31z.net](https://stock.tk31z.net) | [/stock](https://thales.tail2346aa.ts.net/stock) |
 | 💹 Stock Trader | [trader.home](http://trader.home) | [trader.tk31z.net](https://trader.tk31z.net) | [/trader](https://thales.tail2346aa.ts.net/trader) |
-| 📉 Stock Swing | [swing.home](http://swing.home) | [swing.tk31z.net](https://swing.tk31z.net) | [/swing](https://thales.tail2346aa.ts.net/swing) |
-| 🗄️ Stock DB | [stock-db.home](http://stock-db.home) | [stock-db.tk31z.net](https://stock-db.tk31z.net) | [/stock-db](https://thales.tail2346aa.ts.net/stock-db) |
 | 💻 Cockpit | [cockpit.home](http://cockpit.home) | [cockpit.tk31z.net](https://cockpit.tk31z.net) | [/cockpit](https://thales.tail2346aa.ts.net/cockpit) |
 | ⚡ WOL | [wol.home](http://wol.home) | [wol.tk31z.net](https://wol.tk31z.net) | [/wol](https://thales.tail2346aa.ts.net/wol) |
 | 🔧 Router | [router.home](http://router.home) | [router.tk31z.net](https://router.tk31z.net) | [/router](https://thales.tail2346aa.ts.net/router) |
