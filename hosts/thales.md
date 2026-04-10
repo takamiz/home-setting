@@ -31,6 +31,7 @@
 | **Stock Trader API** | `3001` | `http://trader.home` | 株式トレード・ダッシュボード (Rust) / `stock-trader-server.service` (systemd --user) |
 | **Stock Swing API** | `3003` | `http://swing.home` | スイングトレード分析システム (Rust) / `stock-swing-server.service` (systemd --user) |
 | **Jaeger** | `16686` | `http://jaeger.home` | 分散トレーシング UI (v2.17.0) / `jaeger.service` (systemd --user) |
+| **pgAdmin 4** | `5050` | `http://pgadmin.home` | PostgreSQL 管理 Web UI / `pgadmin4.service` (systemd --user) / pip install |
 | **Cockpit** | `9090` | `http://cockpit.home` | サーバー管理 Web UI |
 | Munin | `80` | `http://munin.home` | リソース監視 (Apache Direct Alias) |
 | **WayVNC** | `5900` | - | リモートデスクトップ / `wayvnc.service` + `rpi-connect-wayvnc.service` |
@@ -153,6 +154,7 @@ CF_Token=$(cat ~/.config/cloudflare/api_token) ~/.acme.sh/acme.sh --renew -d tk3
 | `https://wol.tk31z.net` | `localhost:8080` |
 | `https://munin.tk31z.net` | 静的ファイル直接配信 (`/var/cache/munin/www`) |
 | `https://jaeger.tk31z.net` | `localhost:16686` |
+| `https://pgadmin.tk31z.net` | `localhost:5050` |
 | `https://router.tk31z.net` | `192.168.0.1` |
 
 ---
@@ -183,6 +185,7 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 | `https://thales.tail2346aa.ts.net/wol` | `localhost:8080` |
 | `https://thales.tail2346aa.ts.net/munin` | `localhost:80` |
 | `https://thales.tail2346aa.ts.net/jaeger` | `localhost:16686` |
+| `https://thales.tail2346aa.ts.net/pgadmin` | `localhost:5050` |
 | `https://thales.tail2346aa.ts.net/router` | `192.168.0.1` (ルーター管理画面) |
 
 ---

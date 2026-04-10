@@ -30,6 +30,7 @@
 | 🔧 Router | [router.home](http://router.home) | [router.tk31z.net](https://router.tk31z.net) | [/router](https://thales.tail2346aa.ts.net/router) |
 | 📰 Munin | [munin.home](http://munin.home) | [munin.tk31z.net](https://munin.tk31z.net) | [/munin](https://thales.tail2346aa.ts.net/munin) |
 | 🔍 Jaeger | [jaeger.home](http://jaeger.home) | [jaeger.tk31z.net](https://jaeger.tk31z.net) | [/jaeger](https://thales.tail2346aa.ts.net/jaeger) |
+| 🐘 pgAdmin | [pgadmin.home](http://pgadmin.home) | [pgadmin.tk31z.net](https://pgadmin.tk31z.net) | [/pgadmin](https://thales.tail2346aa.ts.net/pgadmin) |
 
 > `*.home`: LAN内アクセス。`*.tk31z.net`: Let's Encrypt HTTPS (Tailscale接続時)。`thales.tail2346aa.ts.net`: Tailscale Serve 経由 HTTPS。
 
