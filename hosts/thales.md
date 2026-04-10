@@ -26,7 +26,7 @@
 | **Apache2** | `80`, `443` | - | リバースプロキシ / `*.home`, `*.tk31z.net` (HTTPS), `thales.tail2346aa.ts.net` の入口 |
 | **AdGuard Home** | `3004`, `53` | `http://adguard.home` | DNSリライト・広告ブロック (Snap) / ※旧port 3000 → 3004 変更済み (stock-db 衝突回避, 2026-04-05) |
 | **PostgreSQL 17** | `5432` | - | **Native (TimescaleDB 2.26.0)** / User: `postgres`, `takamiz` / Pass: `postgres` |
-| **Stock Trader API** | `3001` | `http://trader.home` | 株式トレード・ダッシュボード (Rust) / `stock-trader-server.service` (systemd --user) |
+| **Stock Trader API** | `3001` | `http://trader.home` | 株式トレード・ダッシュボード (Rust) / `stock-trader.service` (systemd --user) |
 | **Jaeger** | `16686` | `http://jaeger.home` | 分散トレーシング UI (v2.17.0) / `jaeger.service` (systemd --user) |
 | **pgAdmin 4** | `5050` | `http://pgadmin.home` | PostgreSQL 管理 Web UI / `pgadmin4.service` (systemd --user) / pip install |
 | **Cockpit** | `9090` | `http://cockpit.home` | サーバー管理 Web UI |
