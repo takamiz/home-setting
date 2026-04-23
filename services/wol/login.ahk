@@ -1,4 +1,4 @@
-; kabu STATION Auto Login (Improved Version)
+; kabu STATION Auto Login (Improved Launch Version)
 #Requires AutoHotkey v2.0
 SetTitleMatchMode(2)
 
@@ -13,26 +13,37 @@ ToolTip("kabu-bot: Checking process...")
 ; 1. プロセスがなければ起動
 if (!ProcessExist("KabuS.exe")) {
     ToolTip("kabu-bot: Starting KabuS.exe...")
-    Run(kabusPath)
+    ; 作業ディレクトリを設定して起動の成功率を上げる
+    SplitPath(kabusPath, &name, &dir)
+    SetWorkingDir(dir)
+    Run('"' kabusPath '"')
+    
+    ; 起動を待機
+    if (!ProcessWait("KabuS.exe", 30)) {
+        ToolTip("kabu-bot: Failed to launch KabuS.exe process.")
+        Sleep(3000)
+        ExitApp
+    }
+    Sleep(5000) ; 起動直後の安定待ち
 }
 
 ; 2. ログインウィンドウの出現を待つ (最大120秒)
 ToolTip("kabu-bot: Waiting for Login Window...")
 if (WinWait("ahk_exe KabuS.exe", , 120)) {
     WinActivate("ahk_exe KabuS.exe")
-    if (WinWaitActive("ahk_exe KabuS.exe", , 5)) {
-        Sleep(1000) ; ウィンドウが完全にアクティブになるのを待つ
+    if (WinWaitActive("ahk_exe KabuS.exe", , 10)) {
+        Sleep(2000) ; ウィンドウが完全に描画されるのを待つ
         
         ; パスワード入力
         ToolTip("kabu-bot: Typing Password...")
         SendEvent("^a{Backspace}")
         Sleep(500)
         SendEvent(password)
-        Sleep(1000) ; ログインボタンが有効になるのを待つ
+        Sleep(1500) ; ログインボタンが有効になるのを十分に待つ
         SendEvent("{Enter}")
         
         ; 3. OTP 取得ループ
-        Loop 12 { ; 3秒おきに最大36秒間チェック
+        Loop 15 { ; 3秒おきに最大45秒間チェック
             ToolTip("kabu-bot: Fetching OTP (Attempt " A_Index ")...")
             
             if FileExist(otpFile)
@@ -45,14 +56,14 @@ if (WinWait("ahk_exe KabuS.exe", , 120)) {
                 if (RegExMatch(otp, "^\d{6}$")) {
                     ToolTip("kabu-bot: OTP Found [" otp "]. Final Login...")
                     WinActivate("ahk_exe KabuS.exe")
-                    Sleep(500)
+                    Sleep(1000)
                     SendEvent("^a{Backspace}")
                     Sleep(500)
                     SendEvent(otp)
-                    Sleep(500)
+                    Sleep(1000)
                     SendEvent("{Enter}")
                     ToolTip("kabu-bot: SUCCESS!")
-                    Sleep(2000)
+                    Sleep(3000)
                     ToolTip()
                     ExitApp
                 }
