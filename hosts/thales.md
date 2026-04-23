@@ -160,7 +160,6 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 - **ヘルスチェック**: `check-services` — 全サービスの死活を一覧表示 (`/usr/local/bin/check-services`)
 - **Kabustation 自動制御**:
   - `kabustation-wol.timer`: 毎日 07:00 (WOL送信)
-  - `kabustation-rdp-login.timer`: 毎日 07:10 (自動ログイン実行)
   - `kabustation-shutdown.timer`: 平日 21:00 (SSH経由でシャットダウン実行)
 - **PostgreSQL 接続確認**: `psql -h 192.168.0.200 -U postgres` (LAN内から)
 - **Exporter 確認**: `sudo systemctl status prometheus-node-exporter prometheus-postgres-exporter`
