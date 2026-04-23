@@ -34,14 +34,15 @@
     - **User**: `takamiz`
     - **認証**: 鍵認証 (パスワードレス)
     - **Sudo**: `NOPASSWD` 設定済み
-    - **稼働中サービス**: Apache2, AdGuard Home (Snap, port 3004), PostgreSQL 17, Stock Trader API (systemd --user), WOL Web UI (systemd system), Cockpit, Munin, Samba, WayVNC, Node Exporter, Postgres Exporter, Jaeger (systemd --user), pgAdmin 4 (systemd --user, port 5050), PCP (pmcd/pmie/pmlogger/pmproxy), Raspberry Pi Connect (systemd --user)
-    - **停止中サービス**: Loki, Prometheus, Promtail — systemd disabled
+    - **稼働中サービス**: Apache2, AdGuard Home (Snap, port 3004), PostgreSQL 17, Stock Trader API (systemd --user), WOL Web UI (systemd system), Cockpit, Munin, Samba, WayVNC, Node Exporter, Postgres Exporter, Jaeger (systemd --user), PCP (pmcd/pmie/pmlogger/pmproxy)
+    - **停止中サービス**: Loki, Prometheus, Promtail, Raspberry Pi Connect — systemd disabled
     - **無効化済みサービス**:
         - `openipmi` — RPi にIPMIハードウェアなし。`mask` 済み (2026-03-28)
         - `nfs-blkmap` / `rpcbind` — NFS未使用のため無効化 (2026-03-20)
     - **削除済みサービス** (2026-03-20):
         - Grafana — APT パッケージ削除、Apache VirtualHost 削除
         - Immich — Docker 未インストール、Apache VirtualHost 削除
+        - pgAdmin 4 — 不要のため削除 (2026-04-23)
     - **監視**: PCP (pmlogger) + Munin + Node Exporter + Postgres Exporter で運用。Prometheus/Loki は停止中
     - **Munin カスタムプラグイン** (`/usr/share/munin/plugins/`):
         - `adguard_dns` — DNS応答時間 (warning: 200ms, critical: 1000ms)
@@ -52,14 +53,14 @@
         - `smart_nvme_sdb` — sdb NVMe SMART健全性 (温度・spare・使用率・エラー数, `-d sntrealtek`)
         - `postgres_size_ALL` / `postgres_connections_*` — PostgreSQL監視 (`libdbd-pg-perl` 必要, postgres実行)
         - `munin_switchbot` — SwitchBot Hub2 温湿度・照度・バッテリー監視 (multigraph: 温湿度は部屋別、照度は `switchbot_light` に統合、バッテリーは `switchbot_battery` に統合)
-        - `service_health` — 全サービス死活監視 multigraph (root実行): system/user サービス (systemctl) + HTTP/TCP エンドポイント。監視対象: stock-trader, jaeger, pgadmin4, adguard 等 (2026-04-10 更新)
+        - `service_health` — 全サービス死活監視 multigraph (root実行): system/user サービス (systemctl) + HTTP/TCP エンドポイント。監視対象: stock-trader, jaeger, adguard 等 (2026-04-23 更新)
         - `multiping` — ルーター(192.168.0.1)・8.8.8.8・1.1.1.1 への RTT・パケットロス監視 (2026-03-29)
         - `apache_accesses` / `apache_processes` / `apache_volume` — Apache アクセス数・プロセス数・転送量 (`libwww-perl` 必要, 2026-03-29)
         - `diskstats` — sda/sdb のみに絞り込み (`env.include_only sda,sdb`、loop デバイス除外, 2026-03-29)
         - ※ sda (USB HDD) はUSBブリッジがSMARTをブロックするため監視不可
         - ※ 設定ファイル: `/etc/munin/plugin-conf.d/local-additions` (diskstats/multiping/apache_* の追加設定)
     - **アクセス可能なURL** (LAN `.home` / `*.tk31z.net` / Tailscale 全経路で疎通確認済み):
-        - AdGuard Home, Stock Trader (trader.home), Cockpit, WOL, Munin, Jaeger (jaeger.home), pgAdmin (pgadmin.home), Router (192.168.0.1)
+        - AdGuard Home, Stock Trader (trader.home), Cockpit, WOL, Munin, Jaeger (jaeger.home), Router (192.168.0.1)
     - **WOL Web UI**: `/home/takamiz/services/wol` — gunicorn (port 8080)。以前はユーザーサービスだったが、ブート時起動失敗のためシステムサービス (`/etc/systemd/system/wol.service`, `User=takamiz`, `network-online.target` 依存) に移行 (2026-03-20)
     - **Munin テーマ**: Munstrap-Dark (Bootstrap 3ベース) — `/etc/munin/templates/` と `/var/cache/munin/www/static/` に導入
     - **注意**: RAM 3.7 GB、スワップ 2 GB。Immich のバックグラウンドジョブ起因のスワップ枯渇→ウォッチドッグタイムアウトリセット実績あり (2026-03-17) → Immich は削除済み

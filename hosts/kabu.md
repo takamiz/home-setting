@@ -97,6 +97,16 @@ LAN 内他マシンから直接 18080/18081 にアクセスできないため、
 
 ## 6. 自動化システムとの連携
 
+### thales からの定期実行タイムライン (平日のみ)
+
+| 時刻 (JST) | ホスト | ジョブ | kabu API 使用 |
+|-----------|--------|--------|--------------|
+| 19:00 | thales | `stock-market/scripts/daily.sh` | ○ (8088) |
+| 19:30 | thales | `stock-swing/scripts/daily.sh` | ○ (8088) |
+
+> **注意**: 19:00〜19:30 の間は kabu STATION (API ポート 18080) が稼働している必要がある。
+> この時間帯に VNC/RDP でセッション操作する場合は kabu STATION の状態を確認すること。
+
 ### stock-swing (`/home/takamiz/repo/stock-swing`)
 - `.env`: `KABU_API_BASE_URL=http://192.168.0.199:8088`
 - REST API 経由で注文発注・ポジション管理
@@ -120,6 +130,12 @@ ssh rdpuser@192.168.0.199   # または ssh rdpuser@kabu.lan
 ### RDP
 - ホスト: `192.168.0.199:3389`
 - ユーザー: `rdpuser`
+- **注意**: コンソールセッション (ID=1) が Active の場合は競合する。kabu STATION 稼働中は VNC を推奨。
+
+### VNC (TightVNC 2.8.84)
+- ホスト: `192.168.0.199:5900`
+- パスワード: `kabuVNC2024`
+- コンソールセッションに直接アクセスするため RDP と異なりセッション競合なし
 
 ## 8. ネットワーク上の注意事項
 
