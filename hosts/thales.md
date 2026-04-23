@@ -28,14 +28,12 @@
 | **PostgreSQL 17** | `5432` | - | **Native (TimescaleDB 2.26.0)** / User: `postgres`, `takamiz` / Pass: `postgres` |
 | **Stock Trader API** | `3001` | `http://trader.home` | 株式トレード・ダッシュボード (Rust) / `stock-trader.service` (systemd --user) |
 | **Jaeger** | `16686` | `http://jaeger.home` | 分散トレーシング UI (v2.17.0) / `jaeger.service` (systemd --user) |
-| **pgAdmin 4** | `5050` | `http://pgadmin.home` | PostgreSQL 管理 Web UI / `pgadmin4.service` (systemd --user) / pip install |
 | **Cockpit** | `9090` | `http://cockpit.home` | サーバー管理 Web UI |
 | Munin | `80` | `http://munin.home` | リソース監視 (Apache Direct Alias) |
-| **WayVNC** | `5900` | - | リモートデスクトップ / `wayvnc.service` + `rpi-connect-wayvnc.service` |
+| **WayVNC** | `5900` | - | リモートデスクトップ / `wayvnc.service` |
 | **Samba** | `139`, `445` | - | ファイル共有 (smbd/nmbd) |
 | **Node Exporter** | `9100` | - | システムメトリクス収集 (Prometheus exporter) |
 | **Postgres Exporter** | `9187` | - | PostgreSQL メトリクス収集 (Prometheus exporter) |
-| **Raspberry Pi Connect** | - | - | リモートアクセス (rpi-connect.service / systemd --user) |
 
 ### 停止中のサービス
 
@@ -44,6 +42,7 @@
 | **Prometheus** | `9091` | `disabled` | prometheus.service / APT |
 | **Loki** | `3100` | `disabled` | loki.service / systemd --user (Binary) |
 | **Promtail** | `9080` | `disabled` | promtail.service / systemd --user (Binary) |
+| **Raspberry Pi Connect** | - | `disabled` | rpi-connect.service / systemd --user |
 
 ## 4. メトリクス管理 (Exporters)
 Prometheus/Loki スタックは現在停止中。Exporter のみ稼働中。
@@ -124,7 +123,6 @@ CF_Token=$(cat ~/.config/cloudflare/api_token) ~/.acme.sh/acme.sh --renew -d tk3
 | `https://wol.tk31z.net` | `localhost:8080` |
 | `https://munin.tk31z.net` | 静的ファイル直接配信 (`/var/cache/munin/www`) |
 | `https://jaeger.tk31z.net` | `localhost:16686` |
-| `https://pgadmin.tk31z.net` | `localhost:5050` |
 | `https://router.tk31z.net` | `192.168.0.1` |
 
 ---
@@ -152,7 +150,6 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 | `https://thales.tail2346aa.ts.net/wol` | `localhost:8080` |
 | `https://thales.tail2346aa.ts.net/munin` | `localhost:80` |
 | `https://thales.tail2346aa.ts.net/jaeger` | `localhost:16686` |
-| `https://thales.tail2346aa.ts.net/pgadmin` | `localhost:5050` |
 | `https://thales.tail2346aa.ts.net/router` | `192.168.0.1` (ルーター管理画面) |
 
 ---
@@ -161,6 +158,10 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 - **SSHログイン**: `ssh thales`
 - **システム更新**: `sudo apt update && sudo apt upgrade`
 - **ヘルスチェック**: `check-services` — 全サービスの死活を一覧表示 (`/usr/local/bin/check-services`)
+- **Kabustation 自動制御**:
+  - `kabustation-wol.timer`: 毎日 07:00 (WOL送信)
+  - `kabustation-rdp-login.timer`: 毎日 07:10 (自動ログイン実行)
+  - `kabustation-shutdown.timer`: 平日 21:00 (SSH経由でシャットダウン実行)
 - **PostgreSQL 接続確認**: `psql -h 192.168.0.200 -U postgres` (LAN内から)
 - **Exporter 確認**: `sudo systemctl status prometheus-node-exporter prometheus-postgres-exporter`
 - **監視管理** (停止中): `sudo systemctl status prometheus`
