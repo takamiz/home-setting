@@ -39,6 +39,16 @@
 - **状態**: 実装計画書のみ、コミットなし
 - **技術**: Rust / sqlx / TimescaleDB / PostGIS / Polars / ndarray
 
+### Health Connect Viewer
+- **概要**: Android Health Connect の健康データ（歩数 / 心拍 / 睡眠 / 体重 / 運動セッション 等 14 種）を thales に集約し、TimescaleDB に蓄積、React/ECharts のダッシュボードで可視化する個人プロジェクト。Android コンパニオンアプリが WorkManager で 12 時間ごとにバルク同期。
+- **パス**: `/home/takamiz/repo/health-connect`
+- **構成**:
+  - `server/`: Rust + axum + sqlx + TimescaleDB、ts-rs で TS 型生成、SPA fallback で React 配信。94 テスト (ut/it-a/it-b 3 層、業務ロジック 100% カバレッジ)
+  - `web/`: TypeScript + React + Vite + ECharts + TanStack Query、デュアルテーマ自動切替、メトリクスシグネチャ色
+  - `android/`: Kotlin + Jetpack Compose + WorkManager + Health Connect SDK、デュアルエンドポイント自動選択 (LAN/Tailscale)
+- **特徴**: クエリ層で複数データソース重複を自動 dedup（Google Fit / Pixel / Oura / Fitbit が同じ歩数を多重記録するのを排除）、TZ オフセット対応、ペイロード分割で大量同期に耐性
+- **デプロイ**: thales (`health-connect.service`、port 3002、`https://health.tk31z.net`)、APK は同サーバの `web-dist/HealthConnectSync.apk` から配信、日次 pg_dump 365 世代
+
 ### Family Asset Dashboard
 - **概要**: 家庭内資産管理ダッシュボード
 - **技術**: 未定

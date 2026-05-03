@@ -27,6 +27,7 @@
 | **AdGuard Home** | `3004`, `53` | `http://adguard.home` | DNSリライト・広告ブロック (Snap) / ※旧port 3000 → 3004 変更済み (stock-db 衝突回避, 2026-04-05) |
 | **PostgreSQL 17** | `5432` | - | **Native (TimescaleDB 2.26.0)** / User: `postgres`, `takamiz` / Pass: `postgres` |
 | **Stock Trader API** | `3001` | `http://trader.home` | 株式トレード・ダッシュボード (Rust) / `stock-trader.service` (systemd --user) |
+| **Health Connect Viewer** | `3002` | `https://health.tk31z.net` | 個人ヘルスダッシュボード + Android 同期 API (Rust/axum + React) / `health-connect.service` (systemd --user) / Repo: `~/repo/health-connect` |
 | **Jaeger** | `16686` | `http://jaeger.home` | 分散トレーシング UI (v2.17.0) / `jaeger.service` (systemd --user) |
 | **Cockpit** | `9090` | `http://cockpit.home` | サーバー管理 Web UI |
 | Munin | `80` | `http://munin.home` | リソース監視 (Apache Direct Alias) |
@@ -68,6 +69,23 @@ Prometheus/Loki スタックは現在停止中。Exporter のみ稼働中。
   - スクリプト: `/usr/local/bin/tailscale-metrics-collect.sh`
   - node_exporter のテキストファイルコレクター経由で Prometheus に取り込む設定
   - `/etc/default/prometheus-node-exporter` に `--collector.textfile.directory` 設定済み
+
+### Health Connect Viewer
+
+個人ヘルスダッシュボード。Android コンパニオンアプリが Health Connect SDK 経由で 14 種のレコード型を 12 時間ごとに同期、サーバが TimescaleDB に蓄積、Web UI で可視化。
+
+- **バイナリ**: `~/services/health-connect/health-connect-server`
+- **設定**: `~/services/health-connect/.env` (`HEALTH_API_TOKEN`, `DATABASE_URL` 等。トークンは `secrets.md` に記録)
+- **静的アセット**: `~/services/health-connect/web-dist/` (React SPA + `HealthConnectSync.apk`)
+- **DB**: PostgreSQL `health_connect` / TimescaleDB Hypertable on `samples` / 所有: `takamiz` / 接続は socket peer 認証
+- **マイグレーション**: 起動時に `sqlx::migrate!` が自動適用
+- **実行**: `systemctl --user status health-connect.service`
+- **ログ**: `sudo journalctl _UID=$(id -u takamiz) | grep health-connect-server`
+- **バックアップ**: `~/services/health-connect/pg-backup.sh` + `pg-backup.timer`（毎日 03:30 JST、`/mnt/usb-hdd/backup/health-connect/` に 365 世代ローテート）
+- **ビルド**: `legion` で `cargo build --release`、または thales 上で同コマンド
+- **Android アプリ**: APK を `web-dist/HealthConnectSync.apk` に配置し、HTTPS 経由で端末ブラウザから DL
+- **公開エンドポイント**: `https://health.tk31z.net`（LAN）/ Tailscale は wildcard `*.tk31z.net` 経由
+- **運用 doc**: `~/repo/health-connect/docs/{deployment,operations}.md`
 
 ### Jaeger (分散トレーシング)
 
@@ -119,6 +137,7 @@ CF_Token=$(cat ~/.config/cloudflare/api_token) ~/.acme.sh/acme.sh --renew -d tk3
 | :--- | :--- |
 | `https://adguard.tk31z.net` | `localhost:3004` |
 | `https://trader.tk31z.net` | `localhost:3001` |
+| `https://health.tk31z.net` | `localhost:3002` |
 | `https://cockpit.tk31z.net` | `localhost:9090` |
 | `https://wol.tk31z.net` | `localhost:8080` |
 | `https://munin.tk31z.net` | 静的ファイル直接配信 (`/var/cache/munin/www`) |
@@ -146,6 +165,7 @@ Apache VirtualHost (`/etc/apache2/sites-enabled/tailscale.conf`) でパスルー
 | :--- | :--- |
 | `https://thales.tail2346aa.ts.net/adguard` | `localhost:3004` |
 | `https://thales.tail2346aa.ts.net/trader` | `localhost:3001` |
+| `https://thales.tail2346aa.ts.net/health` | `localhost:3002` |
 | `https://thales.tail2346aa.ts.net/cockpit` | `localhost:9090` |
 | `https://thales.tail2346aa.ts.net/wol` | `localhost:8080` |
 | `https://thales.tail2346aa.ts.net/munin` | `localhost:80` |
