@@ -34,7 +34,7 @@
     - **User**: `takamiz`
     - **認証**: 鍵認証 (パスワードレス)
     - **Sudo**: `NOPASSWD` 設定済み
-    - **稼働中サービス**: Apache2, AdGuard Home (Snap, port 3004), PostgreSQL 17, Stock Trader API (systemd --user), WOL Web UI (systemd system), Cockpit, Munin, Samba, WayVNC, Node Exporter, Postgres Exporter, Jaeger (systemd --user), PCP (pmcd/pmie/pmlogger/pmproxy)
+    - **稼働中サービス**: Apache2, AdGuard Home (Snap, port 3004), PostgreSQL 17, Stock Trader API (systemd --user), Health Connect Viewer (systemd --user, port 3002), WOL Web UI (systemd system), Cockpit, Munin, Samba, WayVNC, Node Exporter, Postgres Exporter, Jaeger (systemd --user), PCP (pmcd/pmie/pmlogger/pmproxy)
     - **停止中サービス**: Loki, Prometheus, Promtail, Raspberry Pi Connect — systemd disabled
     - **無効化済みサービス**:
         - `openipmi` — RPi にIPMIハードウェアなし。`mask` 済み (2026-03-28)
@@ -60,7 +60,7 @@
         - ※ sda (USB HDD) はUSBブリッジがSMARTをブロックするため監視不可
         - ※ 設定ファイル: `/etc/munin/plugin-conf.d/local-additions` (diskstats/multiping/apache_* の追加設定)
     - **アクセス可能なURL** (LAN `.home` / `*.tk31z.net` / Tailscale 全経路で疎通確認済み):
-        - AdGuard Home, Stock Trader (trader.home), Cockpit, WOL, Munin, Jaeger (jaeger.home), Router (192.168.0.1)
+        - AdGuard Home, Stock Trader (trader.home), Health Connect Viewer (health.tk31z.net), Cockpit, WOL, Munin, Jaeger (jaeger.home), Router (192.168.0.1)
     - **WOL Web UI**: `/home/takamiz/services/wol` — gunicorn (port 8080)。以前はユーザーサービスだったが、ブート時起動失敗のためシステムサービス (`/etc/systemd/system/wol.service`, `User=takamiz`, `network-online.target` 依存) に移行 (2026-03-20)
     - **Munin テーマ**: Munstrap-Dark (Bootstrap 3ベース) — `/etc/munin/templates/` と `/var/cache/munin/www/static/` に導入
     - **注意**: RAM 3.7 GB、スワップ 2 GB。Immich のバックグラウンドジョブ起因のスワップ枯渇→ウォッチドッグタイムアウトリセット実績あり (2026-03-17) → Immich は削除済み
